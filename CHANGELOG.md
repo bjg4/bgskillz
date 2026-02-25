@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.0.1 — 2026-02-24
+
+- Flattened repo structure for skills.sh compatibility (`npx skills add bjg4/bgskillz`)
+- SKILL.md, scripts/, and references/ now live at repo root
+- Updated README with skills.sh installation instructions
+
 ## v1.0.0 — 2026-02-23
 
 Initial release.

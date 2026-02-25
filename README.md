@@ -18,9 +18,16 @@ Most skills fail because their descriptions are vague, their instructions are bu
 
 ## Installation
 
+### Via skills.sh (recommended)
+
 ```bash
-git clone https://github.com/bjg4/bgskillz.git
-cp -r bgskillz/bgskillz ~/.claude/skills/
+npx skills add bjg4/bgskillz
+```
+
+### Manual
+
+```bash
+git clone https://github.com/bjg4/bgskillz.git ~/.claude/skills/bgskillz
 ```
 
 ## Quick Start
