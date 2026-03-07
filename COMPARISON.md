@@ -11,7 +11,7 @@ Both are meta-skills — skills whose purpose is to help you build other skills.
 | **Author** | Blake Graham (community) | Anthropic (official) |
 | **Philosophy** | Guidebook + toolchain + eval pipeline | Agentic evaluation loop |
 | **Core strength** | Full lifecycle: teaching + building + measuring | Measuring and iterating on skills automatically |
-| **Scripts** | 5 (init, validate, package, run_eval, improve_description) | 9+ (run_eval, improve_description, run_loop, aggregate_benchmark, etc.) |
+| **Scripts** | 6 (init, validate, package, run_eval, improve_description, run_loop) | 9+ (run_eval, improve_description, run_loop, aggregate_benchmark, etc.) |
 | **References** | 7 deep guides (incl. schemas) | 1 schemas reference |
 | **Agents** | 3 (grader, comparator, analyzer) | 3 (grader, comparator, analyzer) |
 | **Eval system** | Automated with blind comparison, grading, and benchmark | Automated with blind comparison, grading, and benchmarking |
@@ -172,16 +172,13 @@ Both are meta-skills — skills whose purpose is to help you build other skills.
 
 BGSkillz v2 has absorbed the core strengths of the Anthropic Skill Creator while retaining its own advantages. It now covers the full lifecycle from "I've never built a skill" to "I've proven my skill is better than baseline with blind evaluation."
 
-The remaining gap is narrow: the Anthropic Skill Creator's `run_loop.py` provides a fully automated improvement cycle (eval → analyze → rewrite → re-eval), while BGSkillz's pipeline requires the user to manually apply improvement suggestions between iterations. This is arguably a feature, not a bug — keeping the human in the loop prevents runaway overfitting.
+The remaining gap is minimal. The Anthropic Skill Creator's `run_loop.py` was the final major missing piece — BGSkillz now has its own `run_loop.py` with `--auto-apply` support, `generate_review.py` for pre-populated viewer HTML, and full statistical benchmarking (mean, stddev, min, max).
 
 **Remaining improvement suggestions for BGSkillz:**
 
 | Priority | Category | Suggestion |
 |----------|----------|------------|
-| **Low** | tools | Add automated re-eval loop (eval → improve → re-eval in one command) |
 | **Low** | tools | Remove PyYAML dependency — parse YAML frontmatter with simple string parsing |
-| **Low** | eval | Pre-populate eval viewer with grading results (currently requires manual grading step) |
-| **Low** | agents | Add `generate_review.py` to auto-generate eval viewer HTML with grading data embedded |
 
 ---
 
@@ -196,14 +193,15 @@ Structural validation     ★★★★★         ★★☆☆☆
 Scaffolding               ★★★★☆         ☆☆☆☆☆
 Reference depth           ★★★★★         ★★☆☆☆
 Automated testing         ★★★★☆         ★★★★★
-Eval infrastructure       ★★★★☆         ★★★★★
+Eval infrastructure       ★★★★★         ★★★★★
 Blind comparison          ★★★★★         ★★★★★
 Description optimization  ★★★★☆         ★★★★★
-Benchmarking              ★★★☆☆         ★★★★★
+Benchmarking              ★★★★☆         ★★★★★
+Automated improvement     ★★★★☆         ★★★★★
 Packaging/distribution    ★★★★★         ★★★☆☆
 Troubleshooting           ★★★★★         ★☆☆☆☆
 Philosophy/writing guide  ★★★★★         ★★★★★
-Eval viewer               ★★★★☆         ★★★★★
+Eval viewer               ★★★★★         ★★★★★
 Anti-overfitting guidance ★★★★★         ★★★★★
 ```
 
@@ -219,7 +217,7 @@ After absorbing the Anthropic Skill Creator's best ideas, BGSkillz v2 now covers
 | No eval infrastructure | 3 agents (grader, comparator, analyzer) + workspace structure |
 | No blind comparison | `agents/comparator.md` with random A/B assignment |
 | No description optimization | `scripts/improve_description.py` with accuracy scoring |
-| No benchmarking | Eval pipeline captures timing and generates aggregate stats |
+| No benchmarking | Eval pipeline captures timing with full statistics (mean, stddev, min, max) |
 | No eval viewer | `eval-viewer/viewer.html` with 3-tab interface |
 | No eval data schemas | `references/schemas.md` with 8 data type definitions |
 | Prescriptive rules over reasoning | Philosophy updated: "explain the why, not just the what" |
@@ -227,10 +225,9 @@ After absorbing the Anthropic Skill Creator's best ideas, BGSkillz v2 now covers
 
 ### Remaining Anthropic Advantages
 
-1. **`run_loop.py`** — Fully automated improvement loop (eval → analyze → rewrite → re-eval). BGSkillz keeps the human in the loop between iterations.
-2. **Statistical depth** — Stddev, min/max, variance analysis in benchmarking. BGSkillz captures mean and counts but not variance.
-3. **`generate_review.py`** — Auto-generates HTML with grading data pre-populated. BGSkillz's viewer requires loading evals.json manually.
-4. **Battle-tested at scale** — As Anthropic's official tool, it has been used across their internal skill development. BGSkillz is community-driven.
+1. **Battle-tested at scale** — As Anthropic's official tool, it has been used across their internal skill development. BGSkillz is community-driven.
+2. **`aggregate_benchmark.py`** — Dedicated benchmark aggregation across multiple iterations with cross-iteration trend analysis. BGSkillz computes per-iteration stats but doesn't yet aggregate across iterations.
+3. **Deeper integration** — The Anthropic pipeline is more tightly wired: scripts call agents automatically, results flow between stages without manual steps. BGSkillz's `run_loop.py` achieves the same with `--auto-apply`, but the integration is newer.
 
 ### Remaining BGSkillz Advantages
 
@@ -244,10 +241,8 @@ After absorbing the Anthropic Skill Creator's best ideas, BGSkillz v2 now covers
 
 The original conclusion — "these skills are complementary, not competitive" — needs updating.
 
-**BGSkillz v2 is now a superset** for most users. It covers the full lifecycle: design, scaffold, write, validate, test, evaluate, grade, compare, analyze, package, and distribute. The Anthropic Skill Creator remains stronger in statistical rigor and automated iteration loops, but BGSkillz now covers those use cases at a solid 4/5 level while maintaining its 5/5 advantages in teaching, validation, and distribution.
+**BGSkillz v2 is now a superset** for most users. It covers the full lifecycle: design, scaffold, write, validate, test, evaluate, grade, compare, analyze, iterate, package, and distribute. With `run_loop.py`, `generate_review.py`, and full statistical benchmarking, the functional gap with the Anthropic Skill Creator is effectively closed.
 
-The ideal user journey is now:
-1. **Use BGSkillz** for everything — design through evaluation
-2. **Supplement with the Anthropic Skill Creator** if you need fully automated run loops or statistical variance analysis
+The Anthropic Skill Creator retains advantages in maturity (battle-tested internally) and cross-iteration trend analysis. BGSkillz retains decisive advantages in teaching, validation, reference depth, and distribution.
 
-The merger gap identified in the original comparison has been largely closed from BGSkillz's side.
+The merger gap identified in the original comparison has been closed from BGSkillz's side.

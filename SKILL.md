@@ -200,17 +200,25 @@ For rigorous testing, use the automated eval pipeline:
 # Run evaluation with baseline comparison
 python ~/.claude/skills/bgskillz/scripts/run_eval.py /path/to/skill --prompts tests/prompts.json
 
+# Run automated improvement loop (eval -> grade -> analyze -> improve -> repeat)
+python ~/.claude/skills/bgskillz/scripts/run_loop.py /path/to/skill --prompts tests/prompts.json --iterations 3 --auto-apply
+
 # Optimize description triggering
 python ~/.claude/skills/bgskillz/scripts/improve_description.py /path/to/skill
+
+# Generate a self-contained HTML review page
+python ~/.claude/skills/bgskillz/eval-viewer/generate_review.py /path/to/workspace/iteration-1/evals.json
 ```
 
-The eval pipeline runs each test prompt through Claude with and without the skill, saving outputs for grading. Use the sub-agents in `agents/` to grade outputs, blind-compare them, and analyze patterns:
+The eval pipeline runs each test prompt through Claude with and without the skill, computing benchmark statistics (mean, stddev, min, max) and saving outputs for grading. Use the sub-agents in `agents/` to grade outputs, blind-compare them, and analyze patterns:
 
 - `agents/grader.md` — Grades outputs against assertions with evidence and meta-evaluation
 - `agents/comparator.md` — Blind A/B comparison (doesn't know which output is skill vs. baseline)
 - `agents/analyzer.md` — Unblinded pattern analysis with prioritized improvement suggestions
 
-Review results visually with `eval-viewer/viewer.html`. See `references/schemas.md` for all data formats.
+The `run_loop.py` script automates the full cycle: eval → grade → analyze → apply suggestions → re-eval. Use `--auto-apply` to let it modify SKILL.md between iterations (backups are saved).
+
+Review results visually with `eval-viewer/viewer.html`, or generate a self-contained review page with `eval-viewer/generate_review.py`. See `references/schemas.md` for all data formats.
 
 ### Iteration Signals
 
@@ -282,7 +290,13 @@ python ~/.claude/skills/bgskillz/scripts/package_skill.py /path/to/skill
 ```bash
 python ~/.claude/skills/bgskillz/scripts/run_eval.py /path/to/skill --prompts tests/prompts.json
 ```
-Then grade and analyze results using the agents in `agents/`. Review visually with `eval-viewer/viewer.html`.
+Then grade and analyze results using the agents in `agents/`. Review visually with `eval-viewer/viewer.html` or generate a self-contained review page with `eval-viewer/generate_review.py`.
+
+### Run Improvement Loop
+"Iterate on my skill" or "Auto-improve my skill" — Run the full automated cycle (eval → grade → analyze → improve → re-eval):
+```bash
+python ~/.claude/skills/bgskillz/scripts/run_loop.py /path/to/skill --prompts tests/prompts.json --iterations 3 --auto-apply
+```
 
 ### Optimize Triggering
 "Improve my skill's triggering" — Run the description optimization pipeline:

@@ -11,6 +11,7 @@ Usage:
 
 import argparse
 import json
+import math
 import os
 import subprocess
 import sys
@@ -182,6 +183,9 @@ def run_evaluation(
         }
         results.append(test_result)
 
+    # Compute benchmark statistics
+    benchmark = compute_benchmark(results, iteration)
+
     # Save evaluation manifest
     manifest = {
         "skill_path": os.path.abspath(skill_path),
@@ -189,15 +193,22 @@ def run_evaluation(
         "timestamp": datetime.now().isoformat(),
         "test_count": len(prompts),
         "results": results,
+        "benchmark": benchmark,
     }
 
     manifest_path = os.path.join(iter_dir, "evals.json")
     with open(manifest_path, "w") as f:
         json.dump(manifest, f, indent=2)
 
+    # Save benchmark separately for easy access
+    benchmark_path = os.path.join(iter_dir, "benchmark.json")
+    with open(benchmark_path, "w") as f:
+        json.dump(benchmark, f, indent=2)
+
     print("\n" + "=" * 60)
     print(f"Evaluation complete. Results saved to: {iter_dir}")
     print(f"Manifest: {manifest_path}")
+    print_benchmark_summary(benchmark)
     print()
     print("Next steps:")
     print("  1. Review outputs in the eval directories")
@@ -205,8 +216,89 @@ def run_evaluation(
     print("  3. Ask Claude to compare outputs using agents/comparator.md")
     print("  4. Ask Claude to analyze patterns using agents/analyzer.md")
     print("  5. Or open the eval viewer for a visual review")
+    print(f"  6. Or run: python generate_review.py {manifest_path}")
 
     return manifest
+
+
+def _stats(values: List[float]) -> Dict[str, Any]:
+    """Compute mean, stddev, min, max for a list of values."""
+    if not values:
+        return {"mean": 0, "stddev": 0, "min": 0, "max": 0, "count": 0}
+    n = len(values)
+    mean = sum(values) / n
+    if n > 1:
+        variance = sum((x - mean) ** 2 for x in values) / (n - 1)
+        stddev = math.sqrt(variance)
+    else:
+        stddev = 0
+    return {
+        "mean": round(mean, 3),
+        "stddev": round(stddev, 3),
+        "min": round(min(values), 3),
+        "max": round(max(values), 3),
+        "count": n,
+    }
+
+
+def compute_benchmark(results: List[Dict[str, Any]], iteration: int) -> Dict[str, Any]:
+    """Compute aggregate benchmark statistics from evaluation results."""
+    with_times = [r["with_skill"]["elapsed_seconds"] for r in results]
+    without_times = [r["without_skill"]["elapsed_seconds"] for r in results]
+    with_success = sum(1 for r in results if r["with_skill"]["success"])
+    without_success = sum(1 for r in results if r["without_skill"]["success"])
+
+    benchmark = {
+        "iteration": iteration,
+        "timestamp": datetime.now().isoformat(),
+        "test_count": len(results),
+        "with_skill": {
+            "elapsed_seconds": _stats(with_times),
+            "success_count": with_success,
+            "success_rate": round(with_success / len(results), 3) if results else 0,
+        },
+        "without_skill": {
+            "elapsed_seconds": _stats(without_times),
+            "success_count": without_success,
+            "success_rate": round(without_success / len(results), 3) if results else 0,
+        },
+    }
+
+    if with_times and without_times:
+        mean_with = sum(with_times) / len(with_times)
+        mean_without = sum(without_times) / len(without_times)
+        benchmark["delta"] = {
+            "time_overhead_seconds": round(mean_with - mean_without, 3),
+        }
+
+    return benchmark
+
+
+def print_benchmark_summary(benchmark: Dict[str, Any]) -> None:
+    """Print a human-readable benchmark summary."""
+    print("\nBenchmark Summary")
+    print("-" * 40)
+
+    ws = benchmark.get("with_skill", {})
+    wos = benchmark.get("without_skill", {})
+
+    ws_time = ws.get("elapsed_seconds", {})
+    wos_time = wos.get("elapsed_seconds", {})
+
+    if ws_time.get("count"):
+        print(f"  With skill:    {ws_time['mean']:.1f}s avg "
+              f"(stddev={ws_time['stddev']:.1f}, min={ws_time['min']:.1f}, max={ws_time['max']:.1f}) "
+              f"[{ws.get('success_count', 0)}/{ws_time['count']} success]")
+    if wos_time.get("count"):
+        print(f"  Without skill: {wos_time['mean']:.1f}s avg "
+              f"(stddev={wos_time['stddev']:.1f}, min={wos_time['min']:.1f}, max={wos_time['max']:.1f}) "
+              f"[{wos.get('success_count', 0)}/{wos_time['count']} success]")
+
+    delta = benchmark.get("delta", {})
+    if "time_overhead_seconds" in delta:
+        overhead = delta["time_overhead_seconds"]
+        sign = "+" if overhead > 0 else ""
+        print(f"  Time delta:    {sign}{overhead:.1f}s")
 
 
 def main() -> None:
