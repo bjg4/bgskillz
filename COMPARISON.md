@@ -241,7 +241,7 @@ After absorbing the Anthropic Skill Creator's best ideas, BGSkillz v2 now covers
 
 The original conclusion — "these skills are complementary, not competitive" — needs updating.
 
-**BGSkillz v2 is now a superset** for most users. It covers the full lifecycle: design, scaffold, write, validate, test, evaluate, grade, compare, analyze, iterate, package, and distribute. With `run_loop.py`, `generate_review.py`, and full statistical benchmarking, the functional gap with the Anthropic Skill Creator is effectively closed.
+**BGSkillz v2 is now a superset** for most users. It covers the full lifecycle: design, scaffold, write, validate, test, evaluate, grade, compare, analyze, iterate, package, and distribute. With `run_loop.py`, `generate_review.py`, full statistical benchmarking, and upgraded agent files matching the Anthropic Skill Creator's depth (claim extraction/verification in grader, expectation checking in comparator, benchmark analysis and instruction adherence scoring in analyzer), the functional gap with the Anthropic Skill Creator is effectively closed.
 
 The Anthropic Skill Creator retains advantages in maturity (battle-tested internally) and cross-iteration trend analysis. BGSkillz retains decisive advantages in teaching, validation, reference depth, and distribution.
 
