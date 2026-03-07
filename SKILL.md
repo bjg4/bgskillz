@@ -14,16 +14,19 @@ Build high-quality, portable Claude skills that trigger reliably and deliver rea
 ## Core Philosophy
 
 1. **Skills are prompts** — SKILL.md is a prompt document. Everything in it shapes Claude's behavior when the skill activates.
-2. **Progressive disclosure** — Keep SKILL.md lean (<500 lines). Put deep reference material in `references/` files and link to them.
-3. **Composability** — Skills should do one thing well. Combine multiple skills for complex workflows rather than building monoliths.
-4. **Portability** — Skills work across Claude.ai, Claude Code, and the API. Write for all surfaces unless you have a reason not to.
-5. **Specificity wins** — Vague skills don't trigger. Specific skills with clear use cases and trigger phrases activate reliably.
+2. **Explain the why, not just the what** — LLMs are smart. They respond better to understood rationale than rigid rules. Instead of "ALWAYS use 4-space indentation," explain *why* consistent indentation matters. If you find yourself writing MUST or NEVER in all caps, that's a yellow flag — reframe as reasoning.
+3. **Progressive disclosure** — Keep SKILL.md lean (<500 lines). Put deep reference material in `references/`, agent instructions in `agents/`, and link to them. Claude reads these when referenced explicitly.
+4. **Composability** — Skills should do one thing well. Combine multiple skills for complex workflows rather than building monoliths.
+5. **Portability** — Skills work across Claude.ai, Claude Code, and the API. Write for all surfaces unless you have a reason not to.
+6. **Specificity wins** — Vague skills don't trigger. Specific skills with clear use cases and trigger phrases activate reliably. Make descriptions slightly "pushy" — Claude tends to undertrigger rather than overtrigger.
+7. **Generalize, don't overfit** — A skill that works only for your test examples is useless. It will be invoked by diverse users with diverse needs. When iterating, resist fiddly overfitty changes. Instead, try different metaphors and explain reasoning. Lean toward fewer, higher-impact improvements.
 
 ## Skill Anatomy
 
 ```
 my-skill/
 ├── SKILL.md              # Required. Main entry point. Contains frontmatter + instructions.
+├── agents/               # Optional. Sub-agent instruction files for multi-agent workflows.
 ├── scripts/              # Optional. Executable helpers (Python, Bash, etc.)
 ├── references/           # Optional. Deep reference docs linked from SKILL.md.
 └── assets/               # Optional. Templates, configs, examples bundled with the skill.
@@ -68,11 +71,12 @@ Problem-first skills tend to have better descriptions because the pain point *is
 
 Decide what goes into each directory:
 
-- **scripts/**: Anything Claude should execute (scaffolders, validators, build tools)
-- **references/**: Deep knowledge Claude should read when needed (style guides, API docs, patterns)
+- **agents/**: Sub-agent instruction files loaded only when spawning specialized agents (graders, comparators, analyzers). These keep SKILL.md lean while enabling multi-agent workflows.
+- **scripts/**: Anything Claude should execute (scaffolders, validators, eval runners, build tools)
+- **references/**: Deep knowledge Claude should read when needed (style guides, API docs, patterns, schemas)
 - **assets/**: Templates, example files, configs that get copied into user projects
 
-Rule of thumb: If it's >50 lines and not needed on every invocation, it belongs in `references/`.
+Rule of thumb: If it's >50 lines and not needed on every invocation, it belongs in `references/`. If it's instructions for a sub-agent, it belongs in `agents/`.
 
 ### Step 5: Initialize the Skill
 
@@ -106,11 +110,13 @@ See `references/description-crafting.md` for 15+ examples and anti-patterns.
 **Writing instructions:**
 - Use imperative voice: "Generate a report" not "You should generate a report"
 - Be specific and actionable: "Use 4-space indentation" not "Format code nicely"
+- Explain reasoning over rigid rules: "Use early returns because deeply nested code is harder to debug" is more effective than "ALWAYS use early returns"
 - Front-load critical instructions — Claude may skim long documents
-- Include examples of good output when possible
+- Include examples of good output when possible — Claude mimics examples more reliably than it follows abstract rules
 - Use markdown headings (##, ###) to organize sections — NOT XML tags
 - Provide a "degrees of freedom" principle: tell Claude what it CAN vary, not just constraints
 - Set defaults with escape hatches: "Use TypeScript by default. If the user specifies another language, use that instead."
+- Calibrate your tone to your audience — users range from non-technical to expert developers. Use context cues from the user's message to adapt jargon level.
 
 **Error handling:**
 - Tell Claude what to do when things go wrong
@@ -164,9 +170,13 @@ These are hard requirements. Violating them causes failures.
 
 **Show, don't just tell.** Include 1-2 examples of ideal output in your SKILL.md. Claude mimics examples more reliably than it follows abstract rules.
 
+**Look for repeated work.** If you run tests and notice Claude independently writes similar boilerplate or setup code each time, bundle that code into the skill as a script or template. Don't make Claude reinvent the wheel on every invocation.
+
+**Keep the prompt lean.** After each iteration, review the full SKILL.md and remove instructions that aren't pulling their weight. Read transcripts to identify instructions that Claude ignores or that cause unproductive behavior. A shorter, focused skill outperforms a comprehensive but bloated one.
+
 ## Testing and Iteration
 
-Test your skill in three ways:
+Test your skill in three ways, from manual to fully automated:
 
 1. **Trigger testing** — Does it activate when it should? Does it stay quiet when it shouldn't?
    - Test with exact phrases: "Create a new skill"
@@ -182,9 +192,33 @@ Test your skill in three ways:
    - Run the same task with and without the skill
    - The skill should produce noticeably better results
 
-**Undertriggering signals**: Users have to explicitly invoke the skill; paraphrased requests don't activate it. Fix: Add more trigger phrases to the description. Be more specific about use cases.
+### Automated Evaluation Pipeline
 
-**Overtriggering signals**: Skill activates on unrelated tasks. Fix: Add negative triggers. Narrow the description scope. Use more specific terminology.
+For rigorous testing, use the automated eval pipeline:
+
+```bash
+# Run evaluation with baseline comparison
+python ~/.claude/skills/bgskillz/scripts/run_eval.py /path/to/skill --prompts tests/prompts.json
+
+# Optimize description triggering
+python ~/.claude/skills/bgskillz/scripts/improve_description.py /path/to/skill
+```
+
+The eval pipeline runs each test prompt through Claude with and without the skill, saving outputs for grading. Use the sub-agents in `agents/` to grade outputs, blind-compare them, and analyze patterns:
+
+- `agents/grader.md` — Grades outputs against assertions with evidence and meta-evaluation
+- `agents/comparator.md` — Blind A/B comparison (doesn't know which output is skill vs. baseline)
+- `agents/analyzer.md` — Unblinded pattern analysis with prioritized improvement suggestions
+
+Review results visually with `eval-viewer/viewer.html`. See `references/schemas.md` for all data formats.
+
+### Iteration Signals
+
+**Undertriggering**: Users have to explicitly invoke the skill; paraphrased requests don't activate it. Fix: Add more trigger phrases to the description. Be more specific about use cases.
+
+**Overtriggering**: Skill activates on unrelated tasks. Fix: Add negative triggers. Narrow the description scope. Use more specific terminology.
+
+**Anti-overfitting warning**: When iterating, read the actual transcripts. Look for unproductive behavior the skill causes and look for repeated work across test runs (if all runs independently write similar scripts, bundle that script into the skill). Resist adding fiddly constraints — generalize from the feedback instead.
 
 For comprehensive testing methodology, read `references/testing-methodology.md`.
 
@@ -243,5 +277,18 @@ python ~/.claude/skills/bgskillz/scripts/validate_skill.py /path/to/skill
 python ~/.claude/skills/bgskillz/scripts/package_skill.py /path/to/skill
 ```
 
+### Evaluate a Skill
+"Evaluate my skill" or "Run evals" — Run the automated evaluation pipeline with baseline comparison:
+```bash
+python ~/.claude/skills/bgskillz/scripts/run_eval.py /path/to/skill --prompts tests/prompts.json
+```
+Then grade and analyze results using the agents in `agents/`. Review visually with `eval-viewer/viewer.html`.
+
+### Optimize Triggering
+"Improve my skill's triggering" — Run the description optimization pipeline:
+```bash
+python ~/.claude/skills/bgskillz/scripts/improve_description.py /path/to/skill
+```
+
 ### Get Guidance
-"How do I..." — Answer questions about skill building using the reference library. Topics: descriptions, workflows, testing, troubleshooting, distribution, quality.
+"How do I..." — Answer questions about skill building using the reference library. Topics: descriptions, workflows, testing, evaluation, troubleshooting, distribution, quality.

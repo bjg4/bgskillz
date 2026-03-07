@@ -198,3 +198,77 @@ Different Claude models respond differently to skill instructions.
 - The skill integrates naturally into the user's workflow
 - Claude's explanations and reasoning align with the skill's domain
 - Error messages are helpful and actionable
+
+## Automated Evaluation Pipeline
+
+For rigorous, reproducible testing, use the automated evaluation pipeline. This runs test prompts through Claude with and without the skill, then uses specialized sub-agents for grading and comparison.
+
+### Setup
+
+Create a prompts file (`tests/prompts.json`):
+
+```json
+[
+  {
+    "id": "test-1",
+    "prompt": "Help me create a skill for code review",
+    "assertions": [
+      "Output includes a SKILL.md template",
+      "Description follows the [What] + [When] + [Capabilities] formula",
+      "Includes at least one example"
+    ]
+  }
+]
+```
+
+### Running Evaluations
+
+```bash
+# Run eval with baseline comparison
+python ~/.claude/skills/bgskillz/scripts/run_eval.py /path/to/skill --prompts tests/prompts.json
+
+# Run iteration 2 after improvements
+python ~/.claude/skills/bgskillz/scripts/run_eval.py /path/to/skill --prompts tests/prompts.json --iteration 2
+```
+
+### Grading with Sub-Agents
+
+Use the agents in `agents/` to evaluate outputs:
+
+1. **Grader** (`agents/grader.md`): Evaluates outputs against assertions. Produces PASS/PARTIAL/FAIL grades with evidence. Also runs meta-evaluation — critiquing the assertions themselves to flag trivially-satisfied tests and missing coverage.
+
+2. **Blind Comparator** (`agents/comparator.md`): Compares skill vs. baseline outputs without knowing which is which. Scores on content dimensions (correctness, completeness, specificity, depth) and structure dimensions (organization, clarity, format, conciseness). Prevents evaluator bias.
+
+3. **Post-Hoc Analyzer** (`agents/analyzer.md`): After unblinding, analyzes patterns across all test cases. Identifies consistent wins/losses, high-variance dimensions, and issues hidden by aggregate statistics. Produces prioritized improvement suggestions (P0/P1/P2) with overfitting risk assessment.
+
+### Review Workflow
+
+1. Run the eval pipeline to collect outputs
+2. Grade each test case with the grader agent
+3. Run blind comparisons with the comparator agent
+4. Unblind and analyze with the analyzer agent
+5. Open `eval-viewer/viewer.html` for visual review
+6. Provide per-test-case feedback, export as `feedback.json`
+7. Apply improvements and run the next iteration
+
+### Description Optimization
+
+```bash
+# Generate default trigger queries
+python ~/.claude/skills/bgskillz/scripts/improve_description.py /path/to/skill --generate-only
+
+# Run trigger accuracy tests
+python ~/.claude/skills/bgskillz/scripts/improve_description.py /path/to/skill --queries queries.json
+```
+
+### Anti-Overfitting
+
+When iterating on eval results:
+
+- **Ask "would this generalize?"** before every change
+- **Read transcripts**, not just grades — look for behavioral patterns
+- **Look for repeated work** across runs (if Claude writes similar setup each time, bundle it)
+- **Fewer, higher-impact changes** over many small tweaks
+- **Explain reasoning** over adding rigid constraints
+
+See `references/schemas.md` for all data format specifications.
