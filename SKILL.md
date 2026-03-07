@@ -4,7 +4,7 @@ description: Create S-tier portable skills with comprehensive quality guidance. 
 license: MIT
 metadata:
   author: Blake Graham
-  version: "1.0.0"
+  version: "2.0.0"
 ---
 
 # BGSkillz
