@@ -1,6 +1,6 @@
 # Workflow Patterns
 
-Five proven patterns for structuring skill instructions. Choose the pattern that matches your skill's core behavior.
+Six proven patterns for structuring skill and agent instructions. Choose the pattern that matches your skill's core behavior.
 
 ## Pattern 1: Sequential Workflow Orchestration
 
@@ -159,3 +159,40 @@ Most real skills combine 2-3 patterns. A code review skill might use:
 - **Domain-specific** for the actual review rules
 
 Start with the primary pattern, then layer in secondary patterns as needed. Keep the overall structure readable — if it's getting complex, move detail into reference files.
+
+## Pattern 6: Orchestrator-Workers (Multi-Agent)
+
+Use when a skill needs specialized judgment at different stages, or when SKILL.md would exceed ~500 lines if all logic were inline.
+
+**Structure:**
+```
+## Workflow
+
+### Step 1: [Gather inputs]
+Collect what the user needs. Validate before proceeding.
+
+### Step 2: [Delegate to specialist]
+Read `agents/specialist.md` and spawn a sub-agent with [specific input].
+Wait for structured JSON output matching `references/schemas.md`.
+
+### Step 3: [Deterministic processing]
+Run `scripts/process.py` with the sub-agent output.
+
+### Step 4: [Synthesize and present]
+Combine results. Tell the user what happened.
+```
+
+**Key techniques:**
+- SKILL.md describes *when, who, and what to delegate* — not how specialists do their work
+- Each sub-agent gets one role with structured I/O (Input → Process → Output → Guidelines)
+- Schema contracts in `references/schemas.md` stabilize handoffs between agents and scripts
+- Push loops, aggregation, and file I/O into scripts — agents handle judgment
+- Load sub-agent instructions only when spawning them (progressive disclosure)
+
+**Combine with other patterns:**
+- **Parallelization**: Run independent sub-agents concurrently (e.g., with_skill and baseline evals)
+- **Evaluator-Optimizer**: Grade output → analyze patterns → apply fixes → re-run (see `run_loop.py`)
+
+**Example use case:** Evaluation pipeline (orchestrator runs evals, delegates grading to grader agent, comparison to comparator agent, analysis to analyzer agent)
+
+See `references/agent-lifecycle.md` for orchestration audit criteria and review layers.

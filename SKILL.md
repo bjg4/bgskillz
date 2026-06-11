@@ -1,15 +1,15 @@
 ---
 name: bgskillz
-description: Create S-tier portable skills with comprehensive quality guidance. This skill should be used when creating new skills, improving existing skills, auditing skill quality, or learning skill-building best practices. Covers the full lifecycle from use case definition through testing, distribution, and iteration. Do NOT use for general coding tasks, writing documentation unrelated to skills, or building applications.
+description: Create S-tier portable skills and agents with comprehensive quality guidance. Use when creating or improving skills, designing multi-agent orchestration workflows, auditing agent quality, running evals, or learning agent-building best practices. Covers the full lifecycle from use case definition through automated evaluation, review, and iteration. Do NOT use for general coding tasks, writing documentation unrelated to agents/skills, or building applications.
 license: MIT
 metadata:
   author: Blake Graham
-  version: "2.0.0"
+  version: "4.0.0"
 ---
 
 # BGSkillz
 
-Build high-quality, portable Claude skills that trigger reliably and deliver real value.
+Build high-quality, portable agents and skills that trigger reliably and deliver real value.
 
 ## Core Philosophy
 
@@ -20,6 +20,21 @@ Build high-quality, portable Claude skills that trigger reliably and deliver rea
 5. **Portability** — Skills work across Claude.ai, Claude Code, and the API. Write for all surfaces unless you have a reason not to.
 6. **Specificity wins** — Vague skills don't trigger. Specific skills with clear use cases and trigger phrases activate reliably. Make descriptions slightly "pushy" — Claude tends to undertrigger rather than overtrigger.
 7. **Generalize, don't overfit** — A skill that works only for your test examples is useless. It will be invoked by diverse users with diverse needs. When iterating, resist fiddly overfitty changes. Instead, try different metaphors and explain reasoning. Lean toward fewer, higher-impact improvements.
+8. **Evaluate end states, not processes** — Multi-agent paths are non-deterministic. Grade final outputs against rubrics, not specific tool-call sequences. Use a separate grading agent that hasn't seen the task agent's reasoning.
+9. **Know your capability type** — Capability uplift skills may become obsolete as models improve (baseline passes without the skill). Encoded preference skills need fidelity testing against your actual workflow. Test and retire accordingly.
+
+## Agent Architecture
+
+Agents are harnesses combining **instructions + tools + model**. Skills, rules, commands, and sub-agents are all instruction surfaces — use the right one:
+
+| Surface | Loads | Use for |
+|---------|-------|---------|
+| Rules (`.cursor/rules/`) | Always or on glob match | Conventions, commands, pointers to canonical files |
+| Skills (`SKILL.md`) | On trigger | Domain workflows, bundled scripts |
+| Commands (`.cursor/commands/`) | On `/invoke` | Repeatable team workflows |
+| Sub-agents (`agents/`) | When spawned | Specialized judgment (grading, comparison) |
+
+For orchestration skills that spawn sub-agents, make SKILL.md a flow-control orchestrator — delegate judgment to `agents/`, deterministic work to `scripts/`, and data contracts to `references/schemas.md`. See `references/agent-lifecycle.md` for the full create → review → audit → improve lifecycle.
 
 ## Skill Anatomy
 
@@ -64,6 +79,11 @@ Set measurable goals before building:
 
 - **Problem-first**: You have a pain point. Design the skill around solving it.
 - **Tool-first**: You have an MCP server or API. Design the skill to make it more useful.
+- **Orchestration**: You need multi-stage judgment (eval, grade, compare, analyze). Design SKILL.md as orchestrator with sub-agents in `agents/`.
+
+Also classify the capability type:
+- **Capability uplift**: Teaches something the base model can't do consistently. Test against baseline; watch for obsolescence as models improve.
+- **Encoded preference**: Sequences a workflow the model could do piecemeal. Test for fidelity to your actual process.
 
 Problem-first skills tend to have better descriptions because the pain point *is* the trigger.
 
@@ -191,6 +211,15 @@ Test your skill in three ways, from manual to fully automated:
 3. **Baseline comparison** — Is the skill actually better than Claude without it?
    - Run the same task with and without the skill
    - The skill should produce noticeably better results
+   - If baseline passes evals without the skill, the uplift may be obsolete — consider retiring it
+
+4. **Review layers** — Match review depth to risk:
+   - Self-review checklists in instructions (must-pass before responding)
+   - Dedicated review pass on diffs (Agent Review, PR review)
+   - Blind A/B comparison via comparator agent (eliminates evaluator bias)
+   - Autonomy governance for tool-using agents (permissions, auto-review classifiers)
+
+See `references/agent-lifecycle.md` for the full review and audit framework.
 
 ### Automated Evaluation Pipeline
 
@@ -208,9 +237,12 @@ python ~/.claude/skills/bgskillz/scripts/improve_description.py /path/to/skill
 
 # Generate a self-contained HTML review page
 python ~/.claude/skills/bgskillz/eval-viewer/generate_review.py /path/to/workspace/iteration-1/evals.json
+
+# Aggregate trends across iterations
+python ~/.claude/skills/bgskillz/scripts/aggregate_benchmark.py /path/to/workspace
 ```
 
-The eval pipeline runs each test prompt through Claude with and without the skill, computing benchmark statistics (mean, stddev, min, max) and saving outputs for grading. Use the sub-agents in `agents/` to grade outputs, blind-compare them, and analyze patterns:
+The eval pipeline runs each test prompt through Claude with and without the skill in **clean, isolated contexts** (no cross-contamination between runs), computing benchmark statistics (mean, stddev, min, max) and saving outputs for grading. Use the sub-agents in `agents/` to grade outputs, blind-compare them, and analyze patterns:
 
 - `agents/grader.md` — Grades outputs against assertions with evidence and meta-evaluation
 - `agents/comparator.md` — Blind A/B comparison (doesn't know which output is skill vs. baseline)
@@ -304,5 +336,11 @@ python ~/.claude/skills/bgskillz/scripts/run_loop.py /path/to/skill --prompts te
 python ~/.claude/skills/bgskillz/scripts/improve_description.py /path/to/skill
 ```
 
+### Audit an Agent or Orchestration Skill
+"Audit my agent" or "Review this orchestration skill" — Run the quality checklist plus agent-specific audits (orchestration clarity, eval coverage, autonomy boundaries). See `references/agent-lifecycle.md` and `references/quality-checklist.md`.
+
+### Design Multi-Agent Orchestration
+"I want to build an orchestration skill" — Walk through orchestration patterns (Parallelization, Orchestrator-Workers, Evaluator-Optimizer), sub-agent design, schema contracts, and the eval pipeline. See `references/agent-lifecycle.md` and `references/workflow-patterns.md`.
+
 ### Get Guidance
-"How do I..." — Answer questions about skill building using the reference library. Topics: descriptions, workflows, testing, evaluation, troubleshooting, distribution, quality.
+"How do I..." — Answer questions about agent and skill building using the reference library. Topics: agent lifecycle, descriptions, workflows, testing, evaluation, review, troubleshooting, distribution, quality.

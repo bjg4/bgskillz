@@ -45,6 +45,45 @@ response = client.messages.create(
 **Good for:** Automated test suites, CI integration, A/B testing
 **Limitation:** Requires API access, costs money per test
 
+## Two Kinds of Capabilities
+
+Before writing tests, classify what your skill does. The type determines what regressions mean and when to retire the skill.
+
+### Capability Uplift
+
+Teaches the model something it cannot do consistently without help (proprietary formats, exact coordinate placement, domain-specific techniques).
+
+**Test for:** Measurable improvement over baseline on target tasks.
+**Run evals:** After every model update.
+**Retire when:** Baseline passes your evals without the skill — the uplift may have been absorbed into the base model.
+
+### Encoded Preference
+
+Sequences a workflow the model could do piecemeal, but according to your team's process (review checklists, report formats, release steps).
+
+**Test for:** Fidelity to the actual workflow, not raw quality vs baseline.
+**Run evals:** When the underlying process changes.
+**Retire when:** The process itself changes — update the skill to match.
+
+Tag test assertions with capability type so you interpret failures correctly.
+
+## End-State Evaluation for Multi-Agent Systems
+
+Multi-agent paths are non-deterministic — the same skill may take different tool-call sequences across runs. Evaluate **outcomes**, not processes.
+
+**Evaluate:**
+- Final output correctness and completeness
+- Whether the user's request was fulfilled
+- Schema compliance of structured outputs
+- Timing and cost aggregates
+
+**Don't evaluate:**
+- Specific tool-call order (unless order is a safety requirement)
+- Exact reasoning chains
+- Number of intermediate steps
+
+Use a **separate grading agent** that sees only the output and rubric — not the task agent's reasoning. This prevents anchoring bias where a flawed process accidentally produces a good result.
+
 ## Trigger Testing
 
 The most critical test category. If your skill doesn't trigger, nothing else matters.
@@ -132,6 +171,34 @@ The most overlooked test: Is your skill actually better than Claude without it?
    - **Efficiency**: Does the skill reduce back-and-forth?
 
 If the skill doesn't meaningfully improve on vanilla Claude, reconsider whether it's needed.
+
+If the skill doesn't meaningfully improve on vanilla Claude, reconsider whether it's needed. If baseline *matches or beats* the skill, the capability uplift may be obsolete.
+
+## Parallel Evaluation with Clean Context
+
+Running evals sequentially causes two problems: slow results and context bleed between test runs. Best practice:
+
+- Run each test prompt in an **isolated context** (separate agent session or `context: fork`)
+- Run with_skill and baseline **in parallel** when possible
+- Capture per-run timing and token metrics independently
+- Never let grading results from test-1 influence test-2's execution
+
+The eval pipeline in `scripts/run_eval.py` handles this. For manual testing, start a fresh conversation per test case.
+
+## Review Layers
+
+Testing measures quality; review catches issues before they ship. Use the right layer:
+
+| Layer | When | What it catches |
+|-------|------|----------------|
+| Self-review checklists | Before agent responds | Missing imports, schema violations, incomplete output |
+| During-generation observation | While agent works | Wrong direction early — stop and redirect |
+| Dedicated review pass | After agent finishes | Line-by-line issues in diffs |
+| Blind comparison | After eval runs | Whether skill version is actually better than baseline |
+| CI/PR review | Before merge | Regressions, lint errors, type failures |
+| Autonomy governance | Before tool execution | Actions that exceed permitted scope |
+
+See `references/agent-lifecycle.md` for the full review framework.
 
 ## Model Testing
 
@@ -235,11 +302,19 @@ python ~/.claude/skills/bgskillz/scripts/run_eval.py /path/to/skill --prompts te
 
 Use the agents in `agents/` to evaluate outputs:
 
-1. **Grader** (`agents/grader.md`): Evaluates outputs against assertions. Produces PASS/PARTIAL/FAIL grades with evidence. Also runs meta-evaluation — critiquing the assertions themselves to flag trivially-satisfied tests and missing coverage.
+1. **Grader** (`agents/grader.md`): Evaluates outputs against assertions with binary PASS/FAIL grades and evidence. Extracts and verifies claims (catches hallucinations assertions miss). Runs meta-evaluation on the assertion set itself.
 
-2. **Blind Comparator** (`agents/comparator.md`): Compares skill vs. baseline outputs without knowing which is which. Scores on content dimensions (correctness, completeness, specificity, depth) and structure dimensions (organization, clarity, format, conciseness). Prevents evaluator bias.
+2. **Blind Comparator** (`agents/comparator.md`): Compares skill vs. baseline outputs without knowing which is which. Scores on content and structure dimensions. Prevents evaluator bias.
 
-3. **Post-Hoc Analyzer** (`agents/analyzer.md`): After unblinding, analyzes patterns across all test cases. Identifies consistent wins/losses, high-variance dimensions, and issues hidden by aggregate statistics. Produces prioritized improvement suggestions (P0/P1/P2) with overfitting risk assessment.
+3. **Post-Hoc Analyzer** (`agents/analyzer.md`): After unblinding, analyzes patterns across all test cases. Identifies consistent wins/losses, instruction adherence, and benchmark trends. Produces prioritized improvement suggestions (P0/P1/P2) with overfitting risk assessment.
+
+### Cross-Iteration Trends
+
+```bash
+python ~/.claude/skills/bgskillz/scripts/aggregate_benchmark.py /path/to/workspace
+```
+
+Compares pass rates, timing, and scores across iterations. A skill that improves on iteration 1 but regresses on iteration 3 is likely overfitting to specific test cases.
 
 ### Review Workflow
 

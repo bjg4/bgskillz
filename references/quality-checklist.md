@@ -121,7 +121,7 @@ Score your skill on each dimension (1-5 scale):
 | **Description** | Vague, no trigger phrases | Formula used, some triggers | Precise formula, rich triggers, negative triggers |
 | **Instructions** | Generic, abstract | Specific, some examples | Actionable, exemplified, error-handled |
 | **Scope** | Too broad or too narrow | Reasonable scope | Perfectly bounded with clear exclusions |
-| **Testing** | Untested | Basic trigger + happy path | Full trigger, functional, baseline, model testing |
+| **Testing** | Untested | Basic trigger + happy path | Full trigger, functional, baseline, blind comparison, model testing |
 | **Organization** | Everything in SKILL.md | Some use of references | Clean progressive disclosure, focused files |
 | **Security** | Hardcoded secrets or unsafe | No obvious issues | Explicit security guidance, input validation |
 
@@ -130,3 +130,34 @@ Score your skill on each dimension (1-5 scale):
 - 18-24: A-tier — solid, minor improvements possible
 - 12-17: B-tier — functional, needs refinement
 - Below 12: Needs significant work before publishing
+
+## Agent-Specific Audit (Orchestration Skills)
+
+For skills that spawn sub-agents or orchestrate multi-stage workflows, also check:
+
+### Orchestration Design
+
+- [ ] SKILL.md is flow control only — specialized judgment lives in `agents/`
+- [ ] Each sub-agent has one clear role with structured I/O (Input → Process → Output → Guidelines)
+- [ ] Deterministic work (loops, aggregation, file ops) is in scripts, not agent prompts
+- [ ] Schema contracts documented in `references/schemas.md` for all agent→script handoffs
+- [ ] Sub-agents load only when needed (progressive disclosure within the skill)
+
+### Evaluation Infrastructure
+
+- [ ] Evals test end states (outputs), not specific tool-call sequences
+- [ ] Baseline comparison included (with and without skill on every test)
+- [ ] Blind A/B comparison used for quality judgments (comparator agent)
+- [ ] Grader runs meta-evaluation on assertion quality (flags trivially-satisfied tests)
+- [ ] Parallel eval runs use clean context per test (no cross-contamination)
+- [ ] Capability type identified (uplift vs encoded preference) with appropriate test strategy
+- [ ] Obsolescence check: if baseline passes most evals, skill uplift may no longer be needed
+
+### Autonomy & Safety (Tool-Using Agents)
+
+- [ ] Tool scope is minimal (`allowed-tools` or permissions match actual needs)
+- [ ] Destructive actions require confirmation or are blocked
+- [ ] Agent has escalation path (when to ask user vs proceed autonomously)
+- [ ] Scripts validate inputs; no hardcoded credentials
+
+See `references/agent-lifecycle.md` for the full agent lifecycle framework.
