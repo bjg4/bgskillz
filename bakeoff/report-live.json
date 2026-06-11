@@ -1,0 +1,554 @@
+{
+  "timestamp": "2026-06-11T23:45:52.920264",
+  "git": {
+    "commit": "d204d1358c918631b0e59ee6c87ae77d30ecc436",
+    "branch": "cursor/bgskillz-v5-bakeoff-24b5"
+  },
+  "briefs_path": "/workspace/bakeoff/briefs.json",
+  "artifacts_root": "/workspace/bakeoff/artifacts",
+  "versions": [
+    "v4",
+    "v5"
+  ],
+  "v4_baseline": {
+    "path": "/workspace/versions/v4",
+    "version": "4.0.0"
+  },
+  "v5_candidate": {
+    "path": "/workspace",
+    "version": "5.0.0"
+  },
+  "per_brief": [
+    {
+      "brief_id": "code-review",
+      "versions": {
+        "v4": {
+          "skill_path": "/workspace/bakeoff/artifacts/v4/code-review/code-review",
+          "total_score": 86.21,
+          "max_score": 100.0,
+          "breakdown": {
+            "validation": {
+              "points": 20.0,
+              "passed": true,
+              "errors": 0
+            },
+            "compactness": {
+              "points": 20.0,
+              "lines": 71,
+              "tokens": 636,
+              "max_ideal_lines": 120,
+              "line_score": 10.0,
+              "token_score": 10.0
+            },
+            "description": {
+              "points": 15.0,
+              "length": 321,
+              "has_use_when": true,
+              "has_negative_trigger": false,
+              "length_ok": true,
+              "not_todo": true
+            },
+            "structure": {
+              "points": 5.0,
+              "has_quick_start": false,
+              "has_error_handling": true,
+              "imperative_voice": false,
+              "you_should_count": 0,
+              "imperative_count": 1,
+              "preferred_sections_found": 0,
+              "preferred_sections_total": 2
+            },
+            "brief_alignment": {
+              "points": 20.0,
+              "description_term_hits": 3,
+              "description_term_total": 3,
+              "body_term_hits": 2,
+              "body_term_total": 2
+            },
+            "two_surface_coherence": {
+              "points": 6.21,
+              "desc_terms_checked": 29,
+              "hits_in_body": 18,
+              "ratio": 0.621
+            }
+          },
+          "metrics": {
+            "lines": 71,
+            "tokens_estimate": 636,
+            "validation_errors": [],
+            "validation_warnings": []
+          }
+        },
+        "v5": {
+          "skill_path": "/workspace/bakeoff/artifacts/v5/code-review/code-review",
+          "total_score": 92.63,
+          "max_score": 100.0,
+          "breakdown": {
+            "validation": {
+              "points": 20.0,
+              "passed": true,
+              "errors": 0
+            },
+            "compactness": {
+              "points": 20.0,
+              "lines": 38,
+              "tokens": 196,
+              "max_ideal_lines": 120,
+              "line_score": 10.0,
+              "token_score": 10.0
+            },
+            "description": {
+              "points": 20.0,
+              "length": 218,
+              "has_use_when": true,
+              "has_negative_trigger": true,
+              "length_ok": true,
+              "not_todo": true
+            },
+            "structure": {
+              "points": 10.0,
+              "has_quick_start": true,
+              "has_error_handling": true,
+              "imperative_voice": false,
+              "you_should_count": 0,
+              "imperative_count": 0,
+              "preferred_sections_found": 2,
+              "preferred_sections_total": 2
+            },
+            "brief_alignment": {
+              "points": 20.0,
+              "description_term_hits": 3,
+              "description_term_total": 3,
+              "body_term_hits": 2,
+              "body_term_total": 2
+            },
+            "two_surface_coherence": {
+              "points": 2.63,
+              "desc_terms_checked": 19,
+              "hits_in_body": 5,
+              "ratio": 0.263
+            }
+          },
+          "metrics": {
+            "lines": 38,
+            "tokens_estimate": 196,
+            "validation_errors": [],
+            "validation_warnings": []
+          }
+        }
+      },
+      "winner": "v5",
+      "margin": 6.42
+    },
+    {
+      "brief_id": "commit-message",
+      "versions": {
+        "v4": {
+          "skill_path": "/workspace/bakeoff/artifacts/v4/commit-message/commit-message",
+          "total_score": 83.91,
+          "max_score": 100.0,
+          "breakdown": {
+            "validation": {
+              "points": 20.0,
+              "passed": true,
+              "errors": 0
+            },
+            "compactness": {
+              "points": 20.0,
+              "lines": 62,
+              "tokens": 460,
+              "max_ideal_lines": 80,
+              "line_score": 10.0,
+              "token_score": 10.0
+            },
+            "description": {
+              "points": 15.0,
+              "length": 229,
+              "has_use_when": true,
+              "has_negative_trigger": false,
+              "length_ok": true,
+              "not_todo": true
+            },
+            "structure": {
+              "points": 5.0,
+              "has_quick_start": false,
+              "has_error_handling": true,
+              "imperative_voice": false,
+              "you_should_count": 0,
+              "imperative_count": 1,
+              "preferred_sections_found": 0,
+              "preferred_sections_total": 1
+            },
+            "brief_alignment": {
+              "points": 20.0,
+              "description_term_hits": 2,
+              "description_term_total": 2,
+              "body_term_hits": 1,
+              "body_term_total": 1
+            },
+            "two_surface_coherence": {
+              "points": 3.91,
+              "desc_terms_checked": 23,
+              "hits_in_body": 9,
+              "ratio": 0.391
+            }
+          },
+          "metrics": {
+            "lines": 62,
+            "tokens_estimate": 460,
+            "validation_errors": [],
+            "validation_warnings": []
+          }
+        },
+        "v5": {
+          "skill_path": "/workspace/bakeoff/artifacts/v5/commit-message/commit-message",
+          "total_score": 92.67,
+          "max_score": 100.0,
+          "breakdown": {
+            "validation": {
+              "points": 20.0,
+              "passed": true,
+              "errors": 0
+            },
+            "compactness": {
+              "points": 20.0,
+              "lines": 42,
+              "tokens": 186,
+              "max_ideal_lines": 80,
+              "line_score": 10.0,
+              "token_score": 10.0
+            },
+            "description": {
+              "points": 20.0,
+              "length": 191,
+              "has_use_when": true,
+              "has_negative_trigger": true,
+              "length_ok": true,
+              "not_todo": true
+            },
+            "structure": {
+              "points": 10.0,
+              "has_quick_start": true,
+              "has_error_handling": true,
+              "imperative_voice": false,
+              "you_should_count": 0,
+              "imperative_count": 0,
+              "preferred_sections_found": 1,
+              "preferred_sections_total": 1
+            },
+            "brief_alignment": {
+              "points": 20.0,
+              "description_term_hits": 2,
+              "description_term_total": 2,
+              "body_term_hits": 1,
+              "body_term_total": 1
+            },
+            "two_surface_coherence": {
+              "points": 2.67,
+              "desc_terms_checked": 15,
+              "hits_in_body": 4,
+              "ratio": 0.267
+            }
+          },
+          "metrics": {
+            "lines": 42,
+            "tokens_estimate": 186,
+            "validation_errors": [],
+            "validation_warnings": []
+          }
+        }
+      },
+      "winner": "v5",
+      "margin": 8.76
+    },
+    {
+      "brief_id": "grill-me-clone",
+      "versions": {
+        "v4": {
+          "skill_path": "/workspace/bakeoff/artifacts/v4/grill-me-clone/grill-me",
+          "total_score": 73.88,
+          "max_score": 100.0,
+          "breakdown": {
+            "validation": {
+              "points": 20.0,
+              "passed": true,
+              "errors": 0
+            },
+            "compactness": {
+              "points": 13.0,
+              "lines": 46,
+              "tokens": 341,
+              "max_ideal_lines": 30,
+              "line_score": 3.0,
+              "token_score": 10.0
+            },
+            "description": {
+              "points": 15.0,
+              "length": 193,
+              "has_use_when": true,
+              "has_negative_trigger": false,
+              "length_ok": true,
+              "not_todo": true
+            },
+            "structure": {
+              "points": 5.0,
+              "has_quick_start": false,
+              "has_error_handling": true,
+              "imperative_voice": false,
+              "you_should_count": 0,
+              "imperative_count": 0
+            },
+            "brief_alignment": {
+              "points": 16.67,
+              "description_term_hits": 2,
+              "description_term_total": 3,
+              "body_term_hits": 2,
+              "body_term_total": 2
+            },
+            "two_surface_coherence": {
+              "points": 4.21,
+              "desc_terms_checked": 19,
+              "hits_in_body": 8,
+              "ratio": 0.421
+            }
+          },
+          "metrics": {
+            "lines": 46,
+            "tokens_estimate": 341,
+            "validation_errors": [],
+            "validation_warnings": []
+          }
+        },
+        "v5": {
+          "skill_path": "/workspace/bakeoff/artifacts/v5/grill-me-clone/grill-me",
+          "total_score": 83.53,
+          "max_score": 100.0,
+          "breakdown": {
+            "validation": {
+              "points": 20.0,
+              "passed": true,
+              "errors": 0
+            },
+            "compactness": {
+              "points": 20.0,
+              "lines": 14,
+              "tokens": 128,
+              "max_ideal_lines": 30,
+              "line_score": 10.0,
+              "token_score": 10.0
+            },
+            "description": {
+              "points": 20.0,
+              "length": 219,
+              "has_use_when": true,
+              "has_negative_trigger": true,
+              "length_ok": true,
+              "not_todo": true
+            },
+            "structure": {
+              "points": 0.0,
+              "has_quick_start": false,
+              "has_error_handling": false,
+              "imperative_voice": false,
+              "you_should_count": 0,
+              "imperative_count": 0
+            },
+            "brief_alignment": {
+              "points": 20.0,
+              "description_term_hits": 3,
+              "description_term_total": 3,
+              "body_term_hits": 2,
+              "body_term_total": 2
+            },
+            "two_surface_coherence": {
+              "points": 3.53,
+              "desc_terms_checked": 17,
+              "hits_in_body": 6,
+              "ratio": 0.353
+            }
+          },
+          "metrics": {
+            "lines": 14,
+            "tokens_estimate": 128,
+            "validation_errors": [],
+            "validation_warnings": []
+          }
+        }
+      },
+      "winner": "v5",
+      "margin": 9.65
+    }
+  ],
+  "aggregates": {
+    "v4": {
+      "mean_score": 81.33,
+      "min_score": 73.88,
+      "max_score": 86.21,
+      "briefs_scored": 3
+    },
+    "v5": {
+      "mean_score": 89.61,
+      "min_score": 83.53,
+      "max_score": 92.67,
+      "briefs_scored": 3
+    }
+  },
+  "head_to_head_wins": {
+    "v4": 0,
+    "v5": 3
+  },
+  "overall_winner": "v5",
+  "verdict": "v5_wins",
+  "functional_proxy": {
+    "v4": {
+      "per_brief": {
+        "code-review": {
+          "response_path": "/workspace/bakeoff/artifacts/v4/code-review/code-review/eval/response.md",
+          "assertions": [
+            {
+              "assertion": "Identifies SQL injection risk",
+              "grade": "PASS",
+              "checks_run": 1
+            },
+            {
+              "assertion": "Mentions parameterized queries or input validation",
+              "grade": "PASS",
+              "checks_run": 1
+            },
+            {
+              "assertion": "Structures findings with severity or priority",
+              "grade": "PASS",
+              "checks_run": 1
+            }
+          ],
+          "pass_rate": 1.0,
+          "passed": 3,
+          "total": 3
+        },
+        "commit-message": {
+          "response_path": "/workspace/bakeoff/artifacts/v4/commit-message/commit-message/eval/response.md",
+          "assertions": [
+            {
+              "assertion": "Uses conventional commit format or explains format choice",
+              "grade": "PASS",
+              "checks_run": 1
+            },
+            {
+              "assertion": "Subject line under 72 characters or mentions length constraint",
+              "grade": "PASS",
+              "checks_run": 1
+            },
+            {
+              "assertion": "Describes what changed, not just 'update code'",
+              "grade": "FAIL",
+              "checks_run": 1
+            }
+          ],
+          "pass_rate": 0.667,
+          "passed": 2,
+          "total": 3
+        },
+        "grill-me-clone": {
+          "response_path": "/workspace/bakeoff/artifacts/v4/grill-me-clone/grill-me/eval/response.md",
+          "assertions": [
+            {
+              "assertion": "Asks one focused question rather than a list of many",
+              "grade": "FAIL",
+              "checks_run": 1
+            },
+            {
+              "assertion": "Provides a recommended answer or suggested direction",
+              "grade": "PASS",
+              "checks_run": 1
+            },
+            {
+              "assertion": "Targets a specific design decision",
+              "grade": "PASS",
+              "checks_run": 1
+            }
+          ],
+          "pass_rate": 0.667,
+          "passed": 2,
+          "total": 3
+        }
+      },
+      "mean_pass_rate": 0.778
+    },
+    "v5": {
+      "per_brief": {
+        "code-review": {
+          "response_path": "/workspace/bakeoff/artifacts/v5/code-review/code-review/eval/response.md",
+          "assertions": [
+            {
+              "assertion": "Identifies SQL injection risk",
+              "grade": "PASS",
+              "checks_run": 1
+            },
+            {
+              "assertion": "Mentions parameterized queries or input validation",
+              "grade": "PASS",
+              "checks_run": 1
+            },
+            {
+              "assertion": "Structures findings with severity or priority",
+              "grade": "PASS",
+              "checks_run": 1
+            }
+          ],
+          "pass_rate": 1.0,
+          "passed": 3,
+          "total": 3
+        },
+        "commit-message": {
+          "response_path": "/workspace/bakeoff/artifacts/v5/commit-message/commit-message/eval/response.md",
+          "assertions": [
+            {
+              "assertion": "Uses conventional commit format or explains format choice",
+              "grade": "PASS",
+              "checks_run": 1
+            },
+            {
+              "assertion": "Subject line under 72 characters or mentions length constraint",
+              "grade": "FAIL",
+              "checks_run": 1
+            },
+            {
+              "assertion": "Describes what changed, not just 'update code'",
+              "grade": "PASS",
+              "checks_run": 1
+            }
+          ],
+          "pass_rate": 0.667,
+          "passed": 2,
+          "total": 3
+        },
+        "grill-me-clone": {
+          "response_path": "/workspace/bakeoff/artifacts/v5/grill-me-clone/grill-me/eval/response.md",
+          "assertions": [
+            {
+              "assertion": "Asks one focused question rather than a list of many",
+              "grade": "PASS",
+              "checks_run": 1
+            },
+            {
+              "assertion": "Provides a recommended answer or suggested direction",
+              "grade": "PASS",
+              "checks_run": 1
+            },
+            {
+              "assertion": "Targets a specific design decision",
+              "grade": "PASS",
+              "checks_run": 1
+            }
+          ],
+          "pass_rate": 1.0,
+          "passed": 3,
+          "total": 3
+        }
+      },
+      "mean_pass_rate": 0.889
+    }
+  },
+  "functional_verdict": "v5_wins",
+  "bakeoff_type": "live"
+}

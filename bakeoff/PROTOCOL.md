@@ -93,4 +93,4 @@ v5 wins the bakeoff if:
 
 Run `python bakeoff/run_bakeoff.py --fixtures` — expected verdict: **v5_wins** (fixtures encode v4-style bloat vs v5-style compact skills).
 
-Live bakeoff with agent-created skills is the real proof; fixtures prove the measurement works.
+Live bakeoff results: `bakeoff/report-live.json` + committed artifacts in `bakeoff/live/`. See `bakeoff/MANIFEST.md`.
