@@ -23,7 +23,7 @@ from datetime import datetime
 from typing import Any, Dict, List, Optional
 
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-GRADER_PATH = os.path.join(REPO_ROOT, "agents", "grader.md")
+GRADER_PATH = os.path.join(REPO_ROOT, "bgskillz", "agents", "grader.md")
 
 
 def load_grader_instructions() -> str:

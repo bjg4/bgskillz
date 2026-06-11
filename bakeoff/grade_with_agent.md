@@ -12,7 +12,7 @@ bakeoff/live/{v4|v5}/{brief-id}/{skill-name}/eval/response.md
 
 ## Process
 
-1. Read `agents/grader.md` — follow its grading process exactly.
+1. Read `bgskillz/agents/grader.md` — follow its grading process exactly.
 2. Read `bakeoff/briefs.json` — get eval prompts and assertions per brief.
 3. For each response in `bakeoff/live/`, grade against that brief's assertions.
 4. Write `eval/grading.json` next to each `response.md` using the JSON format from `grader.md`.
@@ -25,7 +25,7 @@ python bakeoff/aggregate_grader_report.py -o bakeoff/report-grader.json
 ## Parallel subagents (optional)
 
 For faster grading, launch one subagent per response. Each subagent receives:
-- `agents/grader.md`
+- `bgskillz/agents/grader.md`
 - The test prompt and assertions from `briefs.json`
 - The response text from `eval/response.md`
 

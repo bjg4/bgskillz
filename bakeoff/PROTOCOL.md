@@ -12,7 +12,7 @@ Skills created following v5 guidance (shape-first, compactness, two-surface desc
 |----------|---------|
 | `bakeoff/briefs.json` | Skill creation briefs + eval assertions |
 | `versions/v4/` | Pinned v4 BGSkillz (SKILL.md + references) |
-| Root `SKILL.md` v5 | Candidate BGSkillz |
+| `bgskillz/SKILL.md` v5 | Candidate BGSkillz |
 | `bakeoff/score_created_skill.py` | Deterministic 100-point rubric |
 | `bakeoff/fixtures/` | Reference v4-style vs v5-style outputs for rubric validation |
 

@@ -1,1 +1,4 @@
 scripts/__pycache__/
+bgskillz/scripts/__pycache__/
+dist/
+*.zip

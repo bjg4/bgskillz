@@ -8,7 +8,7 @@
 
 For each brief in `briefs.json`, an agent created a skill following:
 - **v4:** `versions/v4/SKILL.md` (7-step workflow, comprehensive guidance)
-- **v5:** root `SKILL.md` v5.0.0 (shape-first, compactness, two-surface, great-skill-patterns)
+- **v5:** `bgskillz/SKILL.md` v5.0.0 (shape-first, compactness, two-surface, great-skill-patterns)
 
 Skills saved under `bakeoff/live/{v4|v5}/{brief-id}/{skill-name}/`.
 

@@ -137,7 +137,7 @@ def compare_versions(
             "version": "4.0.0",
         },
         "v5_candidate": {
-            "path": REPO_ROOT,
+            "path": os.path.join(REPO_ROOT, "bgskillz"),
             "version": "5.0.0",
         },
         "per_brief": per_brief,
@@ -178,7 +178,11 @@ def install_fixtures(artifacts_root: str) -> None:
 def generate_prompts(output_dir: str, briefs: List[Dict[str, Any]]) -> None:
     os.makedirs(output_dir, exist_ok=True)
     for ver in ("v4", "v5"):
-        skill_md = os.path.join(REPO_ROOT, "versions", "v4", "SKILL.md") if ver == "v4" else os.path.join(REPO_ROOT, "SKILL.md")
+        skill_md = (
+            os.path.join(REPO_ROOT, "versions", "v4", "SKILL.md")
+            if ver == "v4"
+            else os.path.join(REPO_ROOT, "bgskillz", "SKILL.md")
+        )
         for brief in briefs:
             prompt = f"""You are creating a new agent skill. Follow the BGSkillz {ver.upper()} instructions below to create the skill.
 

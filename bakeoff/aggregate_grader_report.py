@@ -63,7 +63,7 @@ def aggregate(live_dir: str, briefs_path: str, grader: str) -> Dict[str, Any]:
     return {
         "timestamp": datetime.now().isoformat(),
         "grader": grader,
-        "grader_instructions": os.path.join(os.path.dirname(SCRIPT_DIR), "agents", "grader.md"),
+        "grader_instructions": os.path.join(os.path.dirname(SCRIPT_DIR), "bgskillz", "agents", "grader.md"),
         "live_dir": os.path.abspath(live_dir),
         "entries": entries,
         "aggregates": aggregates,

@@ -37,7 +37,7 @@ Build high-quality, portable agents and skills that trigger reliably and deliver
 ## Features
 
 ### Building
-- **7-step creation workflow** from use case definition to packaged distribution
+- **Creation workflow** from use case definition to packaged distribution (simple + rigorous paths)
 - **Description crafting** with the `[What] + [When] + [Capabilities]` formula and 15+ examples
 - **Scaffold generator** (`init_skill.py`) with best-practice templates
 - **Comprehensive validator** (`validate_skill.py`) enforcing 30+ rules
@@ -53,9 +53,8 @@ Build high-quality, portable agents and skills that trigger reliably and deliver
 - **Eval viewer** — Interactive HTML viewer + `generate_review.py` for shareable reports
 
 ### Reference Library
-- 8 guides: agent lifecycle, descriptions, workflow patterns, testing methodology, troubleshooting, distribution, quality checklist, data schemas
+- 9 guides including `great-skill-patterns.md`, agent lifecycle, descriptions, testing, quality checklist, schemas
 - Audit checklist with 1-5 scoring rubric across 6 dimensions (S/A/B-tier thresholds)
-- Agent-specific audit criteria for orchestration skills and tool-using agents
 
 ## Installation
 
@@ -68,8 +67,11 @@ npx skills add bjg4/bgskillz
 ### Manual
 
 ```bash
-git clone https://github.com/bjg4/bgskillz.git ~/.claude/skills/bgskillz
+git clone https://github.com/bjg4/bgskillz.git
+cp -r bgskillz/bgskillz ~/.claude/skills/bgskillz
 ```
+
+The skill directory is `bgskillz/` inside the repo. The repo root holds README, CHANGELOG, bakeoff harness, and version pins — not part of the installed skill.
 
 ## Quick Start
 
@@ -77,85 +79,52 @@ git clone https://github.com/bjg4/bgskillz.git ~/.claude/skills/bgskillz
 ```
 "I want to create a new skill"
 ```
-Walks you through the 7-step workflow: define use cases, set success criteria, choose approach, plan contents, scaffold, write, and package.
 
-**Audit an existing skill:**
+**Validate the installed skill:**
+```bash
+python3 ~/.claude/skills/bgskillz/scripts/validate_skill.py ~/.claude/skills/bgskillz
 ```
-"Audit my skill at ~/.claude/skills/my-skill"
-```
-Runs the full quality checklist and scores the skill across 6 dimensions.
 
-**Evaluate a skill:**
+**Package for distribution:**
+```bash
+python3 ~/.claude/skills/bgskillz/scripts/package_skill.py ~/.claude/skills/bgskillz
 ```
-"Run evals on my skill at ~/.claude/skills/my-skill"
-```
-Runs the automated evaluation pipeline with baseline comparison, grading, and analysis.
 
 **Auto-improve a skill:**
 ```bash
 python3 ~/.claude/skills/bgskillz/scripts/run_loop.py /path/to/skill --prompts tests/prompts.json --iterations 3 --auto-apply
 ```
-Runs the full improvement loop: evaluate, grade, analyze, apply suggestions, repeat.
 
-**Audit an agent or orchestration skill:**
-```
-"Audit my agent at ~/.claude/skills/my-skill"
-```
-Runs the full quality checklist plus agent-specific audits (orchestration, eval coverage, autonomy).
-
-**Design multi-agent orchestration:**
-```
-"I want to build an orchestration skill with sub-agents"
-```
-Walks through orchestration patterns, sub-agent design, schema contracts, and the eval pipeline.
-
-**Aggregate eval trends:**
+**Run the v4 vs v5 bakeoff** (from cloned repo):
 ```bash
-python3 ~/.claude/skills/bgskillz/scripts/aggregate_benchmark.py /path/to/workspace
+python3 bakeoff/run_bakeoff.py --fixtures
+python3 bakeoff/run_live_bakeoff.py
 ```
-Compares pass rates and timing across eval iterations.
 
-**Run the v4 vs v5 bakeoff:**
+**Release packaging** (from cloned repo):
 ```bash
-python3 bakeoff/run_bakeoff.py --fixtures          # Score fixture skills (v5 should win)
-python3 bakeoff/run_bakeoff.py --generate-prompts  # Prompts for live agent bakeoff
-```
-See `bakeoff/PROTOCOL.md` for verifiable success criteria.
-
-**Validate a skill:**
-```bash
-python3 ~/.claude/skills/bgskillz/scripts/validate_skill.py /path/to/my-skill
+./release.sh
 ```
 
-## File Structure
+See `bakeoff/PROTOCOL.md` for verifiable success criteria. See `CHANGELOG.md` for version history.
+
+## Repository Structure
 
 ```
-bgskillz/
-├── SKILL.md                          # Main skill instructions (308 lines)
-├── agents/
-│   ├── grader.md                     # Assertion grading with claim verification
-│   ├── comparator.md                 # Blind A/B comparison
-│   └── analyzer.md                   # Pattern analysis + improvement suggestions
-├── scripts/
-│   ├── init_skill.py                 # Scaffold a new skill
-│   ├── validate_skill.py             # Structural validation (30+ rules)
-│   ├── package_skill.py              # Package for distribution
-│   ├── run_eval.py                   # Automated evaluation with benchmarking
-│   ├── run_loop.py                   # Eval→grade→analyze→improve loop
-│   ├── aggregate_benchmark.py        # Cross-iteration trend analysis
-│   └── improve_description.py        # Trigger accuracy optimization
-├── references/
-│   ├── agent-lifecycle.md            # Create, review, audit, improve agents
-│   ├── description-crafting.md       # 15+ examples and anti-patterns
-│   ├── workflow-patterns.md          # Common skill patterns
-│   ├── testing-methodology.md        # Testing approaches and methodology
-│   ├── troubleshooting.md            # Common issues and fixes
-│   ├── distribution-guide.md         # Hosting and positioning
-│   ├── quality-checklist.md          # Audit rubric with scoring
-│   └── schemas.md                    # JSON schemas for 8 data types
-└── eval-viewer/
-    ├── viewer.html                   # Interactive HTML eval viewer
-    └── generate_review.py            # Generate self-contained review pages
+bgskillz/                    # GitHub repo root
+├── README.md                # This file
+├── CHANGELOG.md
+├── LICENSE
+├── release.sh               # Validate + zip bgskillz/
+├── SELF-EVALUATION.md
+├── bakeoff/                 # v4 vs v5 comparison harness
+├── versions/                # Pinned v4/v5 snapshots
+└── bgskillz/                # The installable skill
+    ├── SKILL.md             # Main instructions (410 lines)
+    ├── agents/              # grader, comparator, analyzer
+    ├── scripts/             # init, validate, package, run_eval, run_loop, ...
+    ├── references/          # 9 reference guides
+    └── eval-viewer/
 ```
 
 ## Requirements

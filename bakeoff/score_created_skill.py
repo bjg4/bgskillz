@@ -15,7 +15,7 @@ import re
 import sys
 from typing import Any, Dict, List, Optional, Tuple
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "scripts"))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "bgskillz", "scripts"))
 from validate_skill import parse_frontmatter, validate_skill  # noqa: E402
 
 
