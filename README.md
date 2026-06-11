@@ -1,6 +1,17 @@
-# BGSkillz v4.0
+# BGSkillz v5.0
 
 Build high-quality, portable agents and skills that trigger reliably and deliver real value. BGSkillz is a meta-skill that covers the full lifecycle from use case definition through automated evaluation, review, audit, iteration, and distribution.
+
+## What's New in v5.0
+
+- **Skill shape decision** — Behavioral / guided / stateful / orchestration (Step 0)
+- **Simple vs rigorous paths** — Approachable creation vs full eval pipeline
+- **Great skill patterns** — Patterns from teach, write-a-skill, grill-me, SkillOpt
+- **Compactness target** — ~100 lines / ~900 tokens ideal (SkillOpt-aligned)
+- **Two-surface testing** — Description (router) vs body (agent) tested separately
+- **User review gate** — Confirm draft before validate/package
+- **SkillOpt optimization discipline** — Bounded edits, strict validation gate, per-skill metrics
+- **Bakeoff harness** — Verifiable v4 vs v5 comparison on fixed briefs (`bakeoff/`)
 
 ## What's New in v4.0
 
@@ -103,6 +114,13 @@ Walks through orchestration patterns, sub-agent design, schema contracts, and th
 python3 ~/.claude/skills/bgskillz/scripts/aggregate_benchmark.py /path/to/workspace
 ```
 Compares pass rates and timing across eval iterations.
+
+**Run the v4 vs v5 bakeoff:**
+```bash
+python3 bakeoff/run_bakeoff.py --fixtures          # Score fixture skills (v5 should win)
+python3 bakeoff/run_bakeoff.py --generate-prompts  # Prompts for live agent bakeoff
+```
+See `bakeoff/PROTOCOL.md` for verifiable success criteria.
 
 **Validate a skill:**
 ```bash

@@ -1,0 +1,406 @@
+{
+  "timestamp": "2026-06-11T23:34:40.849793",
+  "git": {
+    "commit": "c9cffbcd5ef90b22ea3ae6a8177c0c6a9e86a4a9",
+    "branch": "cursor/bgskillz-v5-bakeoff-24b5"
+  },
+  "briefs_path": "/workspace/bakeoff/briefs.json",
+  "artifacts_root": "/workspace/bakeoff/artifacts",
+  "versions": [
+    "v4",
+    "v5"
+  ],
+  "v4_baseline": {
+    "path": "/workspace/versions/v4",
+    "version": "4.0.0"
+  },
+  "v5_candidate": {
+    "path": "/workspace",
+    "version": "5.0.0"
+  },
+  "per_brief": [
+    {
+      "brief_id": "code-review",
+      "versions": {
+        "v4": {
+          "skill_path": "/workspace/bakeoff/artifacts/v4/code-review/code-review",
+          "total_score": 67.33,
+          "max_score": 100.0,
+          "breakdown": {
+            "validation": {
+              "points": 20.0,
+              "passed": true,
+              "errors": 0
+            },
+            "compactness": {
+              "points": 20.0,
+              "lines": 40,
+              "tokens": 394,
+              "max_ideal_lines": 120,
+              "line_score": 10.0,
+              "token_score": 10.0
+            },
+            "description": {
+              "points": 5.0,
+              "length": 44,
+              "has_use_when": false,
+              "has_negative_trigger": false,
+              "length_ok": false,
+              "not_todo": true
+            },
+            "structure": {
+              "points": 5.0,
+              "has_quick_start": false,
+              "has_error_handling": true,
+              "imperative_voice": false,
+              "you_should_count": 19,
+              "imperative_count": 0,
+              "preferred_sections_found": 0,
+              "preferred_sections_total": 2
+            },
+            "brief_alignment": {
+              "points": 13.33,
+              "description_term_hits": 1,
+              "description_term_total": 3,
+              "body_term_hits": 2,
+              "body_term_total": 2
+            },
+            "two_surface_coherence": {
+              "points": 4.0,
+              "desc_terms_checked": 5,
+              "hits_in_body": 2,
+              "ratio": 0.4
+            }
+          },
+          "metrics": {
+            "lines": 40,
+            "tokens_estimate": 394,
+            "validation_errors": [],
+            "validation_warnings": [
+              "Description may be missing a 'when to use' clause. Include trigger context like 'Use when...'"
+            ]
+          }
+        },
+        "v5": {
+          "skill_path": "/workspace/bakeoff/artifacts/v5/code-review/code-review",
+          "total_score": 94.12,
+          "max_score": 100.0,
+          "breakdown": {
+            "validation": {
+              "points": 20.0,
+              "passed": true,
+              "errors": 0
+            },
+            "compactness": {
+              "points": 20.0,
+              "lines": 34,
+              "tokens": 189,
+              "max_ideal_lines": 120,
+              "line_score": 10.0,
+              "token_score": 10.0
+            },
+            "description": {
+              "points": 20.0,
+              "length": 200,
+              "has_use_when": true,
+              "has_negative_trigger": true,
+              "length_ok": true,
+              "not_todo": true
+            },
+            "structure": {
+              "points": 10.0,
+              "has_quick_start": true,
+              "has_error_handling": true,
+              "imperative_voice": false,
+              "you_should_count": 0,
+              "imperative_count": 0,
+              "preferred_sections_found": 2,
+              "preferred_sections_total": 2
+            },
+            "brief_alignment": {
+              "points": 20.0,
+              "description_term_hits": 3,
+              "description_term_total": 3,
+              "body_term_hits": 2,
+              "body_term_total": 2
+            },
+            "two_surface_coherence": {
+              "points": 4.12,
+              "desc_terms_checked": 17,
+              "hits_in_body": 7,
+              "ratio": 0.412
+            }
+          },
+          "metrics": {
+            "lines": 34,
+            "tokens_estimate": 189,
+            "validation_errors": [],
+            "validation_warnings": []
+          }
+        }
+      },
+      "winner": "v5",
+      "margin": 26.79
+    },
+    {
+      "brief_id": "commit-message",
+      "versions": {
+        "v4": {
+          "skill_path": "/workspace/bakeoff/artifacts/v4/commit-message/commit-message",
+          "total_score": 67.5,
+          "max_score": 100.0,
+          "breakdown": {
+            "validation": {
+              "points": 20.0,
+              "passed": true,
+              "errors": 0
+            },
+            "compactness": {
+              "points": 20.0,
+              "lines": 32,
+              "tokens": 249,
+              "max_ideal_lines": 80,
+              "line_score": 10.0,
+              "token_score": 10.0
+            },
+            "description": {
+              "points": 5.0,
+              "length": 28,
+              "has_use_when": false,
+              "has_negative_trigger": false,
+              "length_ok": false,
+              "not_todo": true
+            },
+            "structure": {
+              "points": 0.0,
+              "has_quick_start": false,
+              "has_error_handling": false,
+              "imperative_voice": false,
+              "you_should_count": 11,
+              "imperative_count": 0,
+              "preferred_sections_found": 0,
+              "preferred_sections_total": 1
+            },
+            "brief_alignment": {
+              "points": 15.0,
+              "description_term_hits": 1,
+              "description_term_total": 2,
+              "body_term_hits": 1,
+              "body_term_total": 1
+            },
+            "two_surface_coherence": {
+              "points": 7.5,
+              "desc_terms_checked": 4,
+              "hits_in_body": 3,
+              "ratio": 0.75
+            }
+          },
+          "metrics": {
+            "lines": 32,
+            "tokens_estimate": 249,
+            "validation_errors": [],
+            "validation_warnings": []
+          }
+        },
+        "v5": {
+          "skill_path": "/workspace/bakeoff/artifacts/v5/commit-message/commit-message",
+          "total_score": 94.0,
+          "max_score": 100.0,
+          "breakdown": {
+            "validation": {
+              "points": 20.0,
+              "passed": true,
+              "errors": 0
+            },
+            "compactness": {
+              "points": 20.0,
+              "lines": 27,
+              "tokens": 184,
+              "max_ideal_lines": 80,
+              "line_score": 10.0,
+              "token_score": 10.0
+            },
+            "description": {
+              "points": 20.0,
+              "length": 205,
+              "has_use_when": true,
+              "has_negative_trigger": true,
+              "length_ok": true,
+              "not_todo": true
+            },
+            "structure": {
+              "points": 10.0,
+              "has_quick_start": true,
+              "has_error_handling": true,
+              "imperative_voice": false,
+              "you_should_count": 0,
+              "imperative_count": 0,
+              "preferred_sections_found": 1,
+              "preferred_sections_total": 1
+            },
+            "brief_alignment": {
+              "points": 20.0,
+              "description_term_hits": 2,
+              "description_term_total": 2,
+              "body_term_hits": 1,
+              "body_term_total": 1
+            },
+            "two_surface_coherence": {
+              "points": 4.0,
+              "desc_terms_checked": 15,
+              "hits_in_body": 6,
+              "ratio": 0.4
+            }
+          },
+          "metrics": {
+            "lines": 27,
+            "tokens_estimate": 184,
+            "validation_errors": [],
+            "validation_warnings": []
+          }
+        }
+      },
+      "winner": "v5",
+      "margin": 26.5
+    },
+    {
+      "brief_id": "grill-me-clone",
+      "versions": {
+        "v4": {
+          "skill_path": "/workspace/bakeoff/artifacts/v4/grill-me-clone/grill-me",
+          "total_score": 68.33,
+          "max_score": 100.0,
+          "breakdown": {
+            "validation": {
+              "points": 20.0,
+              "passed": true,
+              "errors": 0
+            },
+            "compactness": {
+              "points": 20.0,
+              "lines": 26,
+              "tokens": 201,
+              "max_ideal_lines": 30,
+              "line_score": 10.0,
+              "token_score": 10.0
+            },
+            "description": {
+              "points": 5.0,
+              "length": 43,
+              "has_use_when": false,
+              "has_negative_trigger": false,
+              "length_ok": false,
+              "not_todo": true
+            },
+            "structure": {
+              "points": 5.0,
+              "has_quick_start": false,
+              "has_error_handling": true,
+              "imperative_voice": false,
+              "you_should_count": 9,
+              "imperative_count": 0
+            },
+            "brief_alignment": {
+              "points": 13.33,
+              "description_term_hits": 1,
+              "description_term_total": 3,
+              "body_term_hits": 2,
+              "body_term_total": 2
+            },
+            "two_surface_coherence": {
+              "points": 5.0,
+              "desc_terms_checked": 4,
+              "hits_in_body": 2,
+              "ratio": 0.5
+            }
+          },
+          "metrics": {
+            "lines": 26,
+            "tokens_estimate": 201,
+            "validation_errors": [],
+            "validation_warnings": [
+              "Description may be missing a 'when to use' clause. Include trigger context like 'Use when...'"
+            ]
+          }
+        },
+        "v5": {
+          "skill_path": "/workspace/bakeoff/artifacts/v5/grill-me-clone/grill-me",
+          "total_score": 83.68,
+          "max_score": 100.0,
+          "breakdown": {
+            "validation": {
+              "points": 20.0,
+              "passed": true,
+              "errors": 0
+            },
+            "compactness": {
+              "points": 20.0,
+              "lines": 10,
+              "tokens": 122,
+              "max_ideal_lines": 30,
+              "line_score": 10.0,
+              "token_score": 10.0
+            },
+            "description": {
+              "points": 20.0,
+              "length": 239,
+              "has_use_when": true,
+              "has_negative_trigger": true,
+              "length_ok": true,
+              "not_todo": true
+            },
+            "structure": {
+              "points": 0.0,
+              "has_quick_start": false,
+              "has_error_handling": false,
+              "imperative_voice": false,
+              "you_should_count": 0,
+              "imperative_count": 0
+            },
+            "brief_alignment": {
+              "points": 20.0,
+              "description_term_hits": 3,
+              "description_term_total": 3,
+              "body_term_hits": 2,
+              "body_term_total": 2
+            },
+            "two_surface_coherence": {
+              "points": 3.68,
+              "desc_terms_checked": 19,
+              "hits_in_body": 7,
+              "ratio": 0.368
+            }
+          },
+          "metrics": {
+            "lines": 10,
+            "tokens_estimate": 122,
+            "validation_errors": [],
+            "validation_warnings": []
+          }
+        }
+      },
+      "winner": "v5",
+      "margin": 15.35
+    }
+  ],
+  "aggregates": {
+    "v4": {
+      "mean_score": 67.72,
+      "min_score": 67.33,
+      "max_score": 68.33,
+      "briefs_scored": 3
+    },
+    "v5": {
+      "mean_score": 90.6,
+      "min_score": 83.68,
+      "max_score": 94.12,
+      "briefs_scored": 3
+    }
+  },
+  "head_to_head_wins": {
+    "v4": 0,
+    "v5": 3
+  },
+  "overall_winner": "v5",
+  "verdict": "v5_wins"
+}

@@ -1,0 +1,60 @@
+[
+  {
+    "id": "code-review",
+    "skill_name": "code-review",
+    "creation_brief": "Create a skill that helps developers review pull requests for bugs, security issues, and maintainability problems. Output should be structured findings with severity levels.",
+    "required_description_terms": ["review", "pull request", "use when"],
+    "required_body_terms": ["security", "error"],
+    "preferred_sections": ["quick start", "workflow"],
+    "max_ideal_lines": 120,
+    "eval_prompts": [
+      {
+        "prompt": "Review this Python function for security issues:\n\ndef login(user, pwd):\n    query = f\"SELECT * FROM users WHERE name='{user}' AND pass='{pwd}'\"\n    return db.execute(query)",
+        "assertions": [
+          "Identifies SQL injection risk",
+          "Mentions parameterized queries or input validation",
+          "Structures findings with severity or priority"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "commit-message",
+    "skill_name": "commit-message",
+    "creation_brief": "Create a skill that writes clear, conventional commit messages from staged git diffs. Follow conventional commits format when appropriate.",
+    "required_description_terms": ["commit", "use when"],
+    "required_body_terms": ["conventional"],
+    "preferred_sections": ["quick start"],
+    "max_ideal_lines": 80,
+    "eval_prompts": [
+      {
+        "prompt": "Write a commit message for: added user authentication with JWT tokens and login endpoint",
+        "assertions": [
+          "Uses conventional commit format or explains format choice",
+          "Subject line under 72 characters or mentions length constraint",
+          "Describes what changed, not just 'update code'"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "grill-me-clone",
+    "skill_name": "grill-me",
+    "creation_brief": "Create a minimal skill that stress-tests a user's design or plan through relentless Socratic questioning, one question at a time, with recommended answers.",
+    "required_description_terms": ["grill", "plan", "use when"],
+    "required_body_terms": ["one", "question"],
+    "preferred_sections": [],
+    "max_ideal_lines": 30,
+    "shape": "behavioral",
+    "eval_prompts": [
+      {
+        "prompt": "I want to build a real-time chat app with 10M users. Grill me on my plan.",
+        "assertions": [
+          "Asks one focused question rather than a list of many",
+          "Provides a recommended answer or suggested direction",
+          "Targets a specific design decision"
+        ]
+      }
+    ]
+  }
+]

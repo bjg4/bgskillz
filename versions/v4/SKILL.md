@@ -4,26 +4,24 @@ description: Create S-tier portable skills and agents with comprehensive quality
 license: MIT
 metadata:
   author: Blake Graham
-  version: "5.0.0"
+  version: "4.0.0"
 ---
 
 # BGSkillz
 
-Build high-quality, portable agents and skills that trigger reliably and deliver real value. **Target ~100 lines / ~900 tokens** per skill — high signal, not high word count.
+Build high-quality, portable agents and skills that trigger reliably and deliver real value.
 
 ## Core Philosophy
 
 1. **Skills are prompts** — SKILL.md is a prompt document. Everything in it shapes Claude's behavior when the skill activates.
 2. **Explain the why, not just the what** — LLMs are smart. They respond better to understood rationale than rigid rules. Instead of "ALWAYS use 4-space indentation," explain *why* consistent indentation matters. If you find yourself writing MUST or NEVER in all caps, that's a yellow flag — reframe as reasoning.
-3. **Progressive disclosure** — Target ~100 lines in SKILL.md (~900 tokens). Hard max 500 lines. Put depth in `references/`, judgment in `agents/`, determinism in `scripts/`.
+3. **Progressive disclosure** — Keep SKILL.md lean (<500 lines). Put deep reference material in `references/`, agent instructions in `agents/`, and link to them. Claude reads these when referenced explicitly.
 4. **Composability** — Skills should do one thing well. Combine multiple skills for complex workflows rather than building monoliths.
 5. **Portability** — Skills work across Claude.ai, Claude Code, and the API. Write for all surfaces unless you have a reason not to.
 6. **Specificity wins** — Vague skills don't trigger. Specific skills with clear use cases and trigger phrases activate reliably. Make descriptions slightly "pushy" — Claude tends to undertrigger rather than overtrigger.
 7. **Generalize, don't overfit** — A skill that works only for your test examples is useless. It will be invoked by diverse users with diverse needs. When iterating, resist fiddly overfitty changes. Instead, try different metaphors and explain reasoning. Lean toward fewer, higher-impact improvements.
 8. **Evaluate end states, not processes** — Multi-agent paths are non-deterministic. Grade final outputs against rubrics, not specific tool-call sequences. Use a separate grading agent that hasn't seen the task agent's reasoning.
 9. **Know your capability type** — Capability uplift skills may become obsolete as models improve (baseline passes without the skill). Encoded preference skills need fidelity testing against your actual workflow. Test and retire accordingly.
-10. **Description and body are two surfaces** — The router only sees the description; the agent sees the body after activation. They can quietly disagree. Test triggers and behavior separately, then end-to-end.
-11. **Right-size the skill** — Not every skill needs scripts, references, or eval pipelines. Match complexity to the behavior. See `references/great-skill-patterns.md`.
 
 ## Agent Architecture
 
@@ -58,22 +56,7 @@ Frontmatter fields:
 
 ## Creation Workflow
 
-Choose a path first:
-- **Simple path** — Shape → use cases → draft → **user review** → validate → package. For first skills or behavioral prompts.
-- **Rigorous path** — Simple path + eval pipeline + bounded improvement loop. When you have a verifier (benchmarkable domain).
-
-See `references/great-skill-patterns.md` for patterns from teach, write-a-skill, grill-me, and SkillOpt.
-
-### Step 0: Pick Skill Shape
-
-| Shape | When | SKILL.md size |
-|-------|------|---------------|
-| Behavioral prompt | One interaction behavior | <20 lines |
-| Guided process | Workflow + optional refs | 50–100 lines |
-| Stateful workspace | Multi-session, files persist | 100–200 + `*-FORMAT.md` |
-| Orchestration | Sub-agents for specialized judgment | 300–500, flow control only |
-
-Also ask: **Do I have a verifier?** Benchmarkable → rigorous path. Open-ended → human review, not auto-apply loops.
+Follow these 7 steps to build a skill from scratch.
 
 ### Step 1: Define 2-3 Concrete Use Cases
 
@@ -127,20 +110,16 @@ This creates a well-structured starting point with TODO prompts to guide you.
 
 ### Step 6: Write the Skill
 
-Use structure: **Quick start → Workflows → Advanced** (link out). See `references/great-skill-patterns.md`.
+This is where quality is made or lost. Follow these rules:
 
 **Description (most critical field):**
-The description is **the only thing the router sees** when selecting skills. The body loads only after activation.
+Use the formula: `[What it does] + [When to use it] + [Key capabilities]`
 
-Two-sentence formula:
-1. What it does (third person)
-2. `Use when [triggers].` Optional: `Do NOT use for [exclusions].`
+Good: "Generate production-ready database migrations from natural language descriptions. Use when adding tables, columns, indexes, or modifying schema. Handles rollbacks, data preservation, and index optimization."
 
-Good: "Review pull requests for bugs, security, and maintainability with structured findings. Use when reviewing PRs or diffs. Do NOT use for writing new features."
+Bad: "Helps with database stuff."
 
-Bad: "Helps with code review."
-
-See `references/description-crafting.md` for 15+ examples.
+See `references/description-crafting.md` for 15+ examples and anti-patterns.
 
 **Naming rules:**
 - kebab-case only: `my-cool-skill` not `MyCoolSkill`
@@ -170,30 +149,7 @@ See `references/description-crafting.md` for 15+ examples.
 - Don't reference external URLs that could change or be compromised
 - Scripts should validate inputs before executing
 
-### Step 7: Review With User
-
-Before validating, present the draft:
-- Does this cover your use cases?
-- Anything missing or unclear?
-- Should any section be more or less detailed?
-
-Do not package until the user confirms or explicitly skips review.
-
-### Step 8: Validate, Test, Package
-
-Run validation:
-```bash
-python ~/.claude/skills/bgskillz/scripts/validate_skill.py /path/to/my-skill
-```
-
-**Two-surface check:**
-- Trigger test: does the description activate on 3+ should-trigger phrases?
-- Body test: when activated, does behavior match what the description promises?
-- E2E: run one real task end-to-end
-
-If benchmarkable, run evals. If open-ended, stop at human review.
-
-### Step 9: Package and Distribute
+### Step 7: Package and Distribute
 
 Run the packager to validate and create a distributable zip:
 
@@ -214,7 +170,7 @@ These are hard requirements. Violating them causes failures.
 5. **Name must match folder** — If folder is `my-skill/`, frontmatter name must be `my-skill`.
 6. **No "claude" or "anthropic" in name** — Reserved terms.
 7. **Description under 1024 characters** — Hard limit.
-8. **SKILL.md under 5000 words** — Target ~900 tokens (~100 lines). Beyond 5000 words, attention degrades.
+8. **SKILL.md under 5000 words** — Beyond this, Claude's attention degrades. Use references for depth.
 9. **One level of nesting** — One level deep is fine. Nested subdirectories like bar/baz/ inside references are not.
 10. **Forward slashes only** — Even on Windows. No backslash paths.
 
@@ -292,15 +248,7 @@ The eval pipeline runs each test prompt through Claude with and without the skil
 - `agents/comparator.md` — Blind A/B comparison (doesn't know which output is skill vs. baseline)
 - `agents/analyzer.md` — Unblinded pattern analysis with prioritized improvement suggestions
 
-The `run_loop.py` script automates the full cycle: eval → grade → analyze → apply suggestions → re-eval.
-
-**SkillOpt discipline when iterating:**
-- Hold out a selection split — accept edits only on strict improvement (ties rejected)
-- Cap at **4–8 bounded edits** per iteration, not full rewrites
-- Log rejected edits; expect **1–4 accepted edits** total for a mature skill
-- Report **per-skill** effect size, not portfolio averages
-
-Use `--auto-apply` cautiously — only when you have a verifier. Backups are saved.
+The `run_loop.py` script automates the full cycle: eval → grade → analyze → apply suggestions → re-eval. Use `--auto-apply` to let it modify SKILL.md between iterations (backups are saved).
 
 Review results visually with `eval-viewer/viewer.html`, or generate a self-contained review page with `eval-viewer/generate_review.py`. See `references/schemas.md` for all data formats.
 
@@ -333,7 +281,7 @@ Quick pre-flight check before publishing:
 - [ ] Name matches folder name
 - [ ] Description follows `[What] + [When] + [Capabilities]` formula
 - [ ] No README.md inside the skill folder
-- [ ] SKILL.md is under 100 lines (ideal) or 500 lines (max)
+- [ ] SKILL.md is under 500 lines / 5000 words
 - [ ] All referenced files actually exist
 - [ ] Scripts are executable and handle errors
 - [ ] Tested with 3+ trigger phrases and 2+ non-trigger phrases
@@ -394,16 +342,5 @@ python ~/.claude/skills/bgskillz/scripts/improve_description.py /path/to/skill
 ### Design Multi-Agent Orchestration
 "I want to build an orchestration skill" — Walk through orchestration patterns (Parallelization, Orchestrator-Workers, Evaluator-Optimizer), sub-agent design, schema contracts, and the eval pipeline. See `references/agent-lifecycle.md` and `references/workflow-patterns.md`.
 
-### Create a New Skill
-"I want to create a new skill" — Step 0: pick shape. Simple or rigorous path. End with validated, reviewed skill.
-
-### Run BGSkillz Bakeoff
-Compare v4 vs v5 skill-creation quality on fixed briefs:
-```bash
-python bakeoff/run_bakeoff.py --fixtures
-python bakeoff/run_bakeoff.py --generate-prompts
-```
-See `bakeoff/PROTOCOL.md` for the full verifiable bakeoff protocol.
-
 ### Get Guidance
-"How do I..." — Topics: great skill patterns, agent lifecycle, descriptions, workflows, testing, evaluation, SkillOpt optimization, distribution, quality.
+"How do I..." — Answer questions about agent and skill building using the reference library. Topics: agent lifecycle, descriptions, workflows, testing, evaluation, review, troubleshooting, distribution, quality.
