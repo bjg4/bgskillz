@@ -63,16 +63,19 @@ Produces `report.json` with:
 - Head-to-head wins
 - Verdict: `v5_wins`, `v4_wins`, or `tie_or_inconclusive`
 
-### Phase 3: Functional eval (optional, requires Claude CLI)
+### Phase 3: Functional eval (agent grader — default)
 
-For each created skill, run brief eval prompts:
+Grade eval responses using `agents/grader.md`. **The Cursor agent can grade directly** — no external CLI auth required.
 
 ```bash
-python scripts/run_eval.py bakeoff/artifacts/v5/code-review/code-review \
-  --prompts bakeoff/briefs/code-review-eval.json
+# Agent reads bakeoff/grade_with_agent.md, writes eval/grading.json per response, then:
+python bakeoff/aggregate_grader_report.py -o bakeoff/report-grader.json
+python bakeoff/run_live_bakeoff.py   # merges structural + agent grader into report-live.json
 ```
 
-Grade with `agents/grader.md`. Compare pass rates v4 vs v5 per brief.
+Optional alternatives:
+- **Codex CLI:** `python bakeoff/grade_with_codex.py` (requires `OPENAI_API_KEY`)
+- **Functional proxy:** `score_functional.py` (keyword heuristics, used only when no `grading.json` exists)
 
 ## Success criteria
 

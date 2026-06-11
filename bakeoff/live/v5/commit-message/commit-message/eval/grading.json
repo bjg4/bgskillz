@@ -1,0 +1,60 @@
+{
+  "response_path": "bakeoff/live/v5/commit-message/commit-message/eval/response.md",
+  "brief_id": "commit-message",
+  "backend": "cursor-agent",
+  "elapsed_seconds": null,
+  "success": true,
+  "grading": {
+    "test_prompt": "Write a commit message for: added user authentication with JWT tokens and login endpoint",
+    "claims": [
+      {
+        "text": "feat(auth) conventional commit format used",
+        "type": "process",
+        "verified": true,
+        "verification_note": "Standard conventional commit structure."
+      },
+      {
+        "text": "Subject line is 37 characters",
+        "type": "factual",
+        "verified": true,
+        "verification_note": "feat(auth): add JWT login endpoint is well under 72 chars."
+      }
+    ],
+    "grades": [
+      {
+        "assertion": "Uses conventional commit format or explains format choice",
+        "grade": "PASS",
+        "evidence": "feat(auth): add JWT login endpoint",
+        "justification": "Uses feat type with auth scope per conventional commits."
+      },
+      {
+        "assertion": "Subject line under 72 characters or mentions length constraint",
+        "grade": "PASS",
+        "evidence": "feat(auth): add JWT login endpoint",
+        "justification": "Subject is 37 characters, satisfying the length requirement without needing an explicit mention."
+      },
+      {
+        "assertion": "Describes what changed, not just 'update code'",
+        "grade": "PASS",
+        "evidence": "Add POST /login issuing JWT access tokens after credential validation",
+        "justification": "Body specifies the login endpoint and JWT token behavior."
+      }
+    ],
+    "execution_metrics": {
+      "word_count": 24,
+      "has_code_blocks": true,
+      "has_headings": false,
+      "instruction_adherence": "Conventional commit format with descriptive body",
+      "completeness": "Covers subject and body for the auth change"
+    },
+    "user_notes_assessment": "N/A",
+    "meta_evaluation": {
+      "trivially_satisfied": [],
+      "missing_coverage": [],
+      "too_coarse": [],
+      "ambiguous": []
+    },
+    "pass_rate": 1.0,
+    "summary": "Valid conventional commit; subject is concise and body describes the specific auth change."
+  }
+}

@@ -1,0 +1,60 @@
+{
+  "response_path": "bakeoff/live/v5/grill-me-clone/grill-me/eval/response.md",
+  "brief_id": "grill-me-clone",
+  "backend": "cursor-agent",
+  "elapsed_seconds": null,
+  "success": true,
+  "grading": {
+    "test_prompt": "I want to build a real-time chat app with 10M users. Grill me on my plan.",
+    "claims": [
+      {
+        "text": "Concurrent peaks are often 1-5% of registered users for 10M user products",
+        "type": "factual",
+        "verified": true,
+        "verification_note": "Reasonable industry heuristic for peak concurrent load estimation."
+      },
+      {
+        "text": "Peak concurrent connections determines connection tier vs pub/sub backbone",
+        "type": "factual",
+        "verified": true,
+        "verification_note": "Valid architectural tradeoff framing."
+      }
+    ],
+    "grades": [
+      {
+        "assertion": "Asks one focused question rather than a list of many",
+        "grade": "PASS",
+        "evidence": "what peak concurrent connections do you need to support — not total registered users, but simultaneous online users sending messages?",
+        "justification": "Single focused question with one question mark; no numbered question list."
+      },
+      {
+        "assertion": "Provides a recommended answer or suggested direction",
+        "grade": "PASS",
+        "evidence": "**Recommended answer:** For \"10M users\" products, concurrent peaks are often 1–5% of registered (50k–500k).",
+        "justification": "Includes a detailed recommended answer block with concrete numbers and guidance."
+      },
+      {
+        "assertion": "Targets a specific design decision",
+        "grade": "PASS",
+        "evidence": "That number determines whether you need a dedicated connection tier (WebSockets + sticky routing) vs a simpler pub/sub backbone.",
+        "justification": "Targets the concurrent-connections estimate as the specific decision that gates architecture."
+      }
+    ],
+    "execution_metrics": {
+      "word_count": 78,
+      "has_code_blocks": false,
+      "has_headings": false,
+      "instruction_adherence": "Follows one-question-at-a-time grill-me behavioral contract",
+      "completeness": "Question, recommended answer, and follow-up prompt all present"
+    },
+    "user_notes_assessment": "N/A",
+    "meta_evaluation": {
+      "trivially_satisfied": [],
+      "missing_coverage": [],
+      "too_coarse": [],
+      "ambiguous": []
+    },
+    "pass_rate": 1.0,
+    "summary": "Exemplary grill-me output: one focused question, recommended answer, and a specific design decision — matches the behavioral skill shape v5 guidance produced."
+  }
+}

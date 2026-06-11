@@ -1,0 +1,60 @@
+{
+  "response_path": "bakeoff/live/v4/commit-message/commit-message/eval/response.md",
+  "brief_id": "commit-message",
+  "backend": "cursor-agent",
+  "elapsed_seconds": null,
+  "success": true,
+  "grading": {
+    "test_prompt": "Write a commit message for: added user authentication with JWT tokens and login endpoint",
+    "claims": [
+      {
+        "text": "Uses feat(auth) conventional commit type and scope",
+        "type": "process",
+        "verified": true,
+        "verification_note": "Subject line follows conventional commits format."
+      },
+      {
+        "text": "Subject is under 72 characters",
+        "type": "factual",
+        "verified": true,
+        "verification_note": "Subject is 37 characters."
+      }
+    ],
+    "grades": [
+      {
+        "assertion": "Uses conventional commit format or explains format choice",
+        "grade": "PASS",
+        "evidence": "feat(auth): add JWT login endpoint",
+        "justification": "Uses conventional commit type (feat) with scope (auth)."
+      },
+      {
+        "assertion": "Subject line under 72 characters or mentions length constraint",
+        "grade": "PASS",
+        "evidence": "Subject is imperative, under 72 characters",
+        "justification": "Explicitly states the subject is under 72 characters."
+      },
+      {
+        "assertion": "Describes what changed, not just 'update code'",
+        "grade": "PASS",
+        "evidence": "Introduce POST /login that validates credentials and returns signed JWT access tokens",
+        "justification": "Body describes the specific auth capability added, not a vague update."
+      }
+    ],
+    "execution_metrics": {
+      "word_count": 38,
+      "has_code_blocks": true,
+      "has_headings": false,
+      "instruction_adherence": "Conventional commit with body explaining the change",
+      "completeness": "Subject and body both address the auth feature"
+    },
+    "user_notes_assessment": "N/A",
+    "meta_evaluation": {
+      "trivially_satisfied": [],
+      "missing_coverage": [],
+      "too_coarse": [],
+      "ambiguous": []
+    },
+    "pass_rate": 1.0,
+    "summary": "Clean conventional commit with explicit length check and descriptive body."
+  }
+}

@@ -1,0 +1,60 @@
+{
+  "response_path": "bakeoff/live/v5/code-review/code-review/eval/response.md",
+  "brief_id": "code-review",
+  "backend": "cursor-agent",
+  "elapsed_seconds": null,
+  "success": true,
+  "grading": {
+    "test_prompt": "Review this Python function for security issues:\n\ndef login(user, pwd):\n    query = f\"SELECT * FROM users WHERE name='{user}' AND pass='{pwd}'\"\n    return db.execute(query)",
+    "claims": [
+      {
+        "text": "SQL built with f-string causes SQL injection",
+        "type": "factual",
+        "verified": true,
+        "verification_note": "Correct identification of the vulnerability."
+      },
+      {
+        "text": "Parameterized query with %s placeholders is the fix",
+        "type": "factual",
+        "verified": true,
+        "verification_note": "Valid DB-API pattern; dialect-specific but correct concept."
+      }
+    ],
+    "grades": [
+      {
+        "assertion": "Identifies SQL injection risk",
+        "grade": "PASS",
+        "evidence": "SQL built with f-string from `user` and `pwd` — **SQL injection**",
+        "justification": "Directly labels the f-string query construction as SQL injection."
+      },
+      {
+        "assertion": "Mentions parameterized queries or input validation",
+        "grade": "PASS",
+        "evidence": "Use parameterized query: `cursor.execute(\"SELECT * FROM users WHERE name = %s AND pass = %s\", (user, pwd))`",
+        "justification": "Includes a concrete parameterized query example."
+      },
+      {
+        "assertion": "Structures findings with severity or priority",
+        "grade": "PASS",
+        "evidence": "## Critical\n- `login`: SQL built with f-string",
+        "justification": "Output uses Critical, Major, and Minor severity sections."
+      }
+    ],
+    "execution_metrics": {
+      "word_count": 62,
+      "has_code_blocks": false,
+      "has_headings": true,
+      "instruction_adherence": "Compact structured review with severity levels",
+      "completeness": "Covers injection, remediation, and password hashing"
+    },
+    "user_notes_assessment": "N/A",
+    "meta_evaluation": {
+      "trivially_satisfied": [],
+      "missing_coverage": [],
+      "too_coarse": [],
+      "ambiguous": []
+    },
+    "pass_rate": 1.0,
+    "summary": "Concise, well-structured security review meeting all assertions with severity-grouped findings."
+  }
+}

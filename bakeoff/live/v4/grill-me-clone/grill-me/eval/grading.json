@@ -1,0 +1,60 @@
+{
+  "response_path": "bakeoff/live/v4/grill-me-clone/grill-me/eval/response.md",
+  "brief_id": "grill-me-clone",
+  "backend": "cursor-agent",
+  "elapsed_seconds": null,
+  "success": true,
+  "grading": {
+    "test_prompt": "I want to build a real-time chat app with 10M users. Grill me on my plan.",
+    "claims": [
+      {
+        "text": "At chat scale you need WebSockets or SSE, not polling",
+        "type": "factual",
+        "verified": true,
+        "verification_note": "Correct architectural guidance for real-time chat."
+      },
+      {
+        "text": "Concurrent connection peak drives sharding and infrastructure choices",
+        "type": "factual",
+        "verified": true,
+        "verification_note": "Valid scaling principle."
+      }
+    ],
+    "grades": [
+      {
+        "assertion": "Asks one focused question rather than a list of many",
+        "grade": "FAIL",
+        "evidence": "What is \"real-time\" for you — sub-100ms delivery, or eventual seconds?\n- Is 10M **concurrent** connections or registered users with lower peak online?",
+        "justification": "Dumps multiple questions across Requirements, Security, and Operations sections instead of one focused Socratic question."
+      },
+      {
+        "assertion": "Provides a recommended answer or suggested direction",
+        "grade": "PASS",
+        "evidence": "**Recommended:** partition users into rooms/channels; avoid single global fan-out.",
+        "justification": "Includes explicit recommended directions in Architecture and a recommended next step."
+      },
+      {
+        "assertion": "Targets a specific design decision",
+        "grade": "PASS",
+        "evidence": "nail down concurrent connection peak (not total registered users)",
+        "justification": "Focuses on the concurrent-vs-registered-users distinction as the key design decision."
+      }
+    ],
+    "execution_metrics": {
+      "word_count": 130,
+      "has_code_blocks": false,
+      "has_headings": true,
+      "instruction_adherence": "Provides architecture guidance but violates one-question-at-a-time behavioral contract",
+      "completeness": "Covers requirements, architecture, security, and ops — too broad for a grill-me skill"
+    },
+    "user_notes_assessment": "N/A",
+    "meta_evaluation": {
+      "trivially_satisfied": [],
+      "missing_coverage": [],
+      "too_coarse": [],
+      "ambiguous": []
+    },
+    "pass_rate": 0.667,
+    "summary": "Informative plan review but fails the core behavioral contract: it asks many questions at once rather than one focused Socratic question. This is exactly the failure mode v4's over-engineered skill produced."
+  }
+}

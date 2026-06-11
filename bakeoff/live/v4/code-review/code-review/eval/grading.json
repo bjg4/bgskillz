@@ -1,0 +1,66 @@
+{
+  "response_path": "bakeoff/live/v4/code-review/code-review/eval/response.md",
+  "brief_id": "code-review",
+  "backend": "cursor-agent",
+  "elapsed_seconds": null,
+  "success": true,
+  "grading": {
+    "test_prompt": "Review this Python function for security issues:\n\ndef login(user, pwd):\n    query = f\"SELECT * FROM users WHERE name='{user}' AND pass='{pwd}'\"\n    return db.execute(query)",
+    "claims": [
+      {
+        "text": "SQL injection via string interpolation from user and pwd",
+        "type": "factual",
+        "verified": true,
+        "verification_note": "Correct — f-string SQL construction is a classic injection vector."
+      },
+      {
+        "text": "Fix using parameterized queries with cursor.execute and bound parameters",
+        "type": "factual",
+        "verified": true,
+        "verification_note": "Correct remediation pattern for Python DB-API."
+      },
+      {
+        "text": "Plaintext password comparison suggests unsafe password storage",
+        "type": "factual",
+        "verified": true,
+        "verification_note": "Reasonable inference; recommends bcrypt/argon2 hashing."
+      }
+    ],
+    "grades": [
+      {
+        "assertion": "Identifies SQL injection risk",
+        "grade": "PASS",
+        "evidence": "SQL injection via string interpolation",
+        "justification": "Explicitly names SQL injection as the primary vulnerability."
+      },
+      {
+        "assertion": "Mentions parameterized queries or input validation",
+        "grade": "PASS",
+        "evidence": "use parameterized queries (`cursor.execute(\"SELECT ... WHERE name=? AND pass=?\", (user, pwd))`)",
+        "justification": "Provides a concrete parameterized query fix with bound parameters."
+      },
+      {
+        "assertion": "Structures findings with severity or priority",
+        "grade": "PASS",
+        "evidence": "## Critical\n\n- **Line 2–3: SQL injection",
+        "justification": "Findings are grouped under Critical, Major, and Minor severity headings."
+      }
+    ],
+    "execution_metrics": {
+      "word_count": 95,
+      "has_code_blocks": false,
+      "has_headings": true,
+      "instruction_adherence": "Structured security review with severity levels as requested",
+      "completeness": "Addressed injection, remediation, and password storage concerns"
+    },
+    "user_notes_assessment": "N/A",
+    "meta_evaluation": {
+      "trivially_satisfied": [],
+      "missing_coverage": [],
+      "too_coarse": [],
+      "ambiguous": []
+    },
+    "pass_rate": 1.0,
+    "summary": "Strong structured review: correctly identifies SQL injection, recommends parameterized queries, and organizes findings by severity."
+  }
+}
