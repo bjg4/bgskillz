@@ -283,3 +283,175 @@ Creation skills should not assume fire-and-forget. Human checkpoints are a featu
 - [ ] Other mattpocock/skills productivity skills
 - [ ] Anthropic official skills (document skills, skill-creator)
 - [ ] Community skills on skills.sh with high install counts
+
+---
+
+# SkillOpt Research (arxiv 2605.23904)
+
+Paper: [SkillOpt: Executive Strategy for Self-Evolving Agent Skills](https://arxiv.org/pdf/2605.23904) (Microsoft, May 2026)
+Community synthesis: [@koylanai thread](https://x.com/koylanai) + Context Engineering Agent Skills v2.3.0 shipping lessons
+
+SkillOpt treats `SKILL.md` as **trainable external state** for a frozen model — textual gradient descent with deep-learning discipline. This validates the core BGSkillz thesis (skills are the adaptation layer) but exposes gaps in how BGSkillz teaches *optimization* and *compactness*.
+
+## Paper mechanics (what actually works)
+
+| Mechanism | What it does | Paper evidence |
+|-----------|-------------|----------------|
+| **Held-out validation gate** | Candidate skill accepted only if selection-split score **strictly improves** (ties rejected) | Prevents harmful "plausible" edits from accumulating |
+| **Bounded edits (learning rate)** | Max L_t add/delete/replace edits per step (default L=4, cosine decay to 2) | Unbounded rewrite collapses performance; lr=4 beats lr=1,8,16 on spreadsheets |
+| **Rejected-edit buffer** | Failed proposals + score drops fed back to optimizer | -1.6 to -4.6 points when removed |
+| **Slow/meta update** | Protected section updated only at epoch boundary | -22.5 points on SpreadsheetBench when removed |
+| **Minibatch reflection** | Failures and successes analyzed separately, merged with failure priority | Filters anecdotal fixes |
+| **Separate optimizer model** | Frontier model proposes edits; frozen target model executes | Zero inference-time optimizer cost at deploy |
+
+**Output profile:** Final skills are 300–2,000 tokens after only **1–4 accepted edits** total across training.
+
+## Koylan's distilled lessons (shipping reality)
+
+1. **Validation gate is the only thing that matters** in self-editing loops. If you're accepting most proposed edits, you're shipping slop. Best runs: 1–4 accepted edits total.
+
+2. **Bounded edits > full rewrites.** 4–8 edits/step is the sweet spot. Textual learning rate — applies to any LLM-as-author loop (docs, prompts, skills).
+
+3. **Compactness wins.** Median ~920 tokens. Length ≠ effort. High signal density.
+
+4. **Harness < skill.** Codex-trained skill → Claude Code: +59.7 on SpreadsheetBench. Procedural knowledge transfers; runtime doesn't own the value.
+
+5. **Frozen model + trained context** = practical domain adaptation for everyone not training weights. Portable, inspectable, zero inference overhead.
+
+6. **Verifier is the bottleneck.** Auto-graders work for benchmarks; open-ended work (writing, design, strategy) still needs human or better verifiers.
+
+7. **Description ≠ body (two surfaces).** Router sees description only; agent sees body once activated. They can quietly disagree — only end-to-end task tests catch this.
+
+8. **Per-skill effect size > corpus average.** Rewriting 3 descriptions moved corpus ~1pp but individual skills 23–25pp. Measure per skill, not aggregate.
+
+9. **Fast/slow state split** (Personal Brain OS → SkillOpt):
+   - Slow-state: voice-guide, tone-of-voice.md (rarely touched)
+   - Fast-state: posts.jsonl, bookmarks.jsonl (frequent updates)
+   - **Protected section invariant**: fast edits cannot overwrite slow lessons (`<!-- SLOW_UPDATE_START/END -->`). Removing it: -22 points.
+
+## Implications for BGSkillz (skill-creation skill)
+
+These are **creation and optimization** lessons, not eval-only.
+
+### 1. Teach compactness as a first-class goal
+
+| Source | Target |
+|--------|--------|
+| SkillOpt | 300–2,000 tokens final; ~920 median |
+| write-a-skill | 100 lines ideal |
+| BGSkillz today | 500 lines / 5000 words max |
+
+**Change:** Reframe limits. **Target ~100 lines / ~900 tokens.** Hard max 500 lines. "If your skill is long, you're probably hiding low signal."
+
+### 2. Teach optimization discipline, not just "iterate"
+
+BGSkillz `run_loop.py --auto-apply` is philosophically closer to *uncontrolled self-revision* (what SkillOpt argues against) than SkillOpt's loop.
+
+**Creation guidance should teach:**
+- Train / selection / test splits (selection gates acceptance; test is report-only)
+- Strict improvement gate (ties rejected)
+- Bounded edits per iteration (4–8, not full rewrites)
+- Rejected-edit log (what was tried and why it failed)
+- Expect **1–4 accepted edits** total for a mature skill, not 20
+
+### 3. Protected sections for stateful skills
+
+Borrow from SkillOpt + Koylan's fast/slow split:
+
+```markdown
+<!-- SLOW_UPDATE_START -->
+Durable domain lessons — epoch-level, rarely changed
+<!-- SLOW_UPDATE_END -->
+
+## Fast procedures
+(iteration-level edits allowed here)
+```
+
+For teach-style workspace skills: MISSION.md = slow; lessons = fast. Explicit invariant: fast edits must not contradict slow compass.
+
+BGSkillz should recommend this when skill shape = **stateful workspace**.
+
+### 4. Description/body as two test surfaces
+
+New creation checklist item:
+- [ ] Description accurately previews what the body delivers
+- [ ] End-to-end test: does the skill activate AND behave as description promises?
+- [ ] Test description and body **separately** (trigger eval vs functional eval)
+
+Koylan: only E2E catches quiet disagreement. BGSkillz already has trigger + functional testing — make the **two-surface problem** explicit in creation workflow.
+
+### 5. Per-skill measurement, not portfolio averages
+
+When improving descriptions or running evals across a skill library:
+- Report Δ per skill
+- Flag skills with high variance (23pp moves hidden in 1pp average)
+- Don't declare victory on corpus averages
+
+Add to testing-methodology.md and analyzer agent guidance.
+
+### 6. Verifier-aware creation paths
+
+SkillOpt only works where auto-graders exist. BGSkillz should fork:
+
+| Domain | Optimization path |
+|--------|-------------------|
+| Benchmarkable (code, spreadsheets, QA) | Full eval loop + strict gate (SkillOpt-style) |
+| Open-ended (writing, design, strategy) | Human review gate; exemplar patterns; no false confidence from LLM grader |
+
+Creation step: **"Do you have a verifier?"** If no → simple path + user review, not auto-apply loop.
+
+### 7. Portability as design goal
+
+SkillOpt transfer results support BGSkillz portability principle — but make it concrete:
+- Write harness-agnostic procedures ("verify output format") not harness-specific ("use Codex tool X")
+- Test skill on 2+ models or harnesses before shipping
+- Procedural knowledge > runtime coupling
+
+### 8. Skills as trainable parameters (philosophy upgrade)
+
+Koylan's arc: Personal Brain OS (files as state) → SkillOpt (files as **measured, optimizable** state).
+
+BGSkillz v4 agent-lifecycle + v5 direction:
+- **Static:** hand-written skill
+- **Measured:** eval pipeline (what we have)
+- **Optimized:** SkillOpt-style bounded edits with validation gate (what we should teach)
+
+Position BGSkillz as the guide for static → measured → optimized maturity.
+
+## BGSkillz gaps exposed by SkillOpt
+
+| Gap | Severity | Fix direction |
+|-----|----------|---------------|
+| `--auto-apply` lacks strict held-out gate | High | Document gate requirements; optionally implement selection split |
+| No bounded edit cap in improvement loop | High | Max 4–8 edits per iteration in run_loop |
+| No rejected-edit buffer | Medium | Log rejected proposals + score delta |
+| No protected slow/fast sections | Medium | Pattern in stateful skills + scaffold |
+| Compactness target too loose (500 lines) | Medium | Target 100 lines / ~900 tokens |
+| Description/body mismatch not explicit | Medium | Two-surface testing in creation workflow |
+| Corpus-level metrics emphasized | Low | Per-skill effect size reporting |
+| Open-ended verifier gap unacknowledged | Medium | Verifier-aware creation fork |
+
+## Synthesis: three research streams converging
+
+```
+Exemplar skills (teach, write-a-skill, grill-me)
+  → HOW to shape skills (behavioral / guided / stateful)
+  → Right-size, domain depth, artifact contracts
+
+SkillOpt paper
+  → HOW to OPTIMIZE skills (gate, bounded edits, compact output)
+  → Skills as trainable external state
+
+Koylan shipping lessons
+  → HOW to MEASURE skills (two surfaces, per-skill Δ, fast/slow split)
+  → Verifier limits, portability in production
+```
+
+BGSkillz should integrate all three into the **creation workflow**, not just the eval pipeline.
+
+## References
+
+- Paper: https://arxiv.org/pdf/2605.23904
+- Project: https://microsoft.github.io/SkillOpt/
+- Code: https://github.com/microsoft/SkillOpt
+- Koylan Context Engineering Skills: referenced in thread (composer-2, claude-opus-4-7, gpt-5.5, gemini-3.1-pro cross-model testing)
